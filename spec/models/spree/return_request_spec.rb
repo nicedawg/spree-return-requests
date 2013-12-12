@@ -20,5 +20,12 @@ describe Spree::ReturnRequest do
       return_request = Spree::ReturnRequest.new(order: order, email_address: "notright@spree.com")
       expect { return_request.save! }.to raise_error
     end
+
+    it "requires the order be younger than a configurable number of days" do
+      SpreeReturnRequests::Config[:return_request_max_order_age_in_days] = 30
+      order = FactoryGirl.create(:shipped_order, completed_at: 31.days.ago)
+      return_request = Spree::ReturnRequest.new(order: order, email_address: order.email)
+      expect { return_request.save! }.to raise_error
+    end
   end
 end
