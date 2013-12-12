@@ -1,7 +1,5 @@
 module SpreeReturnRequests
   class Engine < Rails::Engine
-    require 'spree/core'
-    isolate_namespace Spree
     engine_name 'spree_return_requests'
 
     config.autoload_paths += %W(#{config.root}/lib)
@@ -18,5 +16,9 @@ module SpreeReturnRequests
     end
 
     config.to_prepare &method(:activate).to_proc
+
+    initializer "spree.return_requests.preferences", :after => "spree.environment" do |app|
+      SpreeReturnRequests::Config = Spree::ReturnRequestsConfiguration.new
+    end
   end
 end
