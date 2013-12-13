@@ -9,6 +9,10 @@ class Spree::ReturnRequest < ActiveRecord::Base
   before_save :verify_order_and_email_match
   before_save :order_cant_be_too_old_to_return
 
+  def returnable_line_items
+    order.line_items
+  end
+
   private
 
     def verify_order_and_email_match
