@@ -39,7 +39,7 @@ describe Spree::ReturnRequest do
       end
 
       it "should allow the same line items (and their quantities) as the order" do
-        @order.line_items.should == @return_request.returnable_line_items
+        @order.line_items.map { |li| { id: li.id, qty: li.quantity } }.should == @return_request.returnable_line_items.map { |li| { id: li[:id], qty: li[:qty] } }
       end
     end
 
@@ -47,13 +47,46 @@ describe Spree::ReturnRequest do
 
       before do
         @order = FactoryGirl.create(:shipped_order)
-        @return_request = Spree::ReturnRequest.create!(order: @order, email_address: @order.email)
+
+        # create a return request for all of the order's first line item
+        previous_return_request = Spree::ReturnRequest.create!(order: @order, email_address: @order.email)
+        previous_return_request.line_items << Spree::ReturnRequestLineItem.create!(line_item: @order.line_items.first, qty: @order.line_items.first.quantity)
+        @line_item_returned = previous_return_request.line_items.first
+
+        # and then start a new return request
+        @return_request = Spree::ReturnRequest.new(order: @order, email_address: @order.email)
       end
 
-      it "should consider the one previous return"
+      it "should consider the one previous return" do
+        @return_request.returnable_qty(@line_item_returned.id).should == 0
+      end
     end
+
     context "when two previous returns were placed against the order" do
-      it "should consider the two previous returns"
+
+      before do
+        @order = FactoryGirl.create(:shipped_order)
+
+        # create a return request for all of the order's first line item
+        @previous_return_request = Spree::ReturnRequest.create!(order: @order, email_address: @order.email)
+        line_item = @order.line_items.first
+        @previous_return_request.line_items << Spree::ReturnRequestLineItem.create!(line_item: line_item, qty: line_item.quantity)
+
+        # and then create a return request for all of the order's second line item
+        @previous_return_request_2 = Spree::ReturnRequest.create!(order: @order, email_address: @order.email)
+        line_item = @order.line_items.second
+        @previous_return_request_2.line_items << Spree::ReturnRequestLineItem.create!(line_item: line_item, qty: line_item.quantity)
+
+        # and then start a new return request to see what will be considered returnable
+        @return_request = Spree::ReturnRequest.new(order: @order, email_address: @order.email)
+      end
+
+      it "should consider the two previous returns" do
+        # shouldn't be able to return any of the order's first line item
+        @return_request.returnable_qty(@previous_return_request.line_items.first.line_item_id).should == 0
+        # OR the second line item
+        @return_request.returnable_qty(@previous_return_request_2.line_items.first.line_item_id).should == 0
+      end
     end
   end
 end
