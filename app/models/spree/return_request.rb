@@ -1,15 +1,21 @@
 class Spree::ReturnRequest < ActiveRecord::Base
   belongs_to :order
 
-  has_many :line_items, class_name: "Spree::ReturnRequestLineItem"
+  has_many :return_request_line_items, class_name: "Spree::ReturnRequestLineItem"
 
   validates :order, presence: true
   validates :email_address, presence: true
 
-  attr_accessible :order, :email_address
+  attr_accessible :order, :order_id, :email_address, :return_request_line_items_attributes
+
+  accepts_nested_attributes_for :return_request_line_items
 
   before_save :verify_order_and_email_match
   before_save :order_cant_be_too_old_to_return
+
+  def line_items
+    self.return_request_line_items
+  end
 
   def returnable_qty(line_item_id)
     returnable_line_items.find(0) { |l| l[:id] == line_item_id }[:qty]
