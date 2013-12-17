@@ -1,0 +1,51 @@
+<div class="edit-return-request">
+  <%= form_for(@return_request, method: "put") do |f| %>
+    <fieldset data-hook="edit_return_request_form_fields" class="no-border-top">
+      <legend align="center"><%= Spree.t(:edit_return_request) %></legend>
+
+      <dl>
+        <dt>Order Number</dt>
+        <dd><%= @order.number %></dd>
+
+        <dt>Email Address</dt>
+        <dd><%= @return_request.email_address %></dd>
+      </dl>
+
+      <div data-hook="return_request_fields" class="row">
+        <div class="alpha twelve columns">
+          <div class="field">
+            <table>
+              <tr>
+                <td>Item</td>
+                <td>Purchased</td>
+                <td>Already Returned</td>
+                <td>Returning</td>
+              </tr>
+              <%= f.fields_for :return_request_line_items do |ff| %>
+                <% @order.line_items.each do |li| %>
+                  <tr>
+                    <td>
+                      <%= li.variant.name_and_sku %>
+                      <br/><%= li.variant.options_text %>
+                    </td>
+                    <td><%= li.quantity %></td>
+                    <td>X</td>
+                    <td>
+                      <%= ff.hidden_field :id %>
+                      <%= ff.text_field :qty %>
+                      X
+                    </td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </table>
+          </div>
+        </div>
+        <div class="form-buttons filter-actions actions" data-hook="buttons">
+          <%= button Spree.t(:edit_return_request), 'icon-arrow-right' %>
+        </div>
+      </div>
+    </fieldset>
+  <% end %>
+</div>
+
