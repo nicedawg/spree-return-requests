@@ -45,7 +45,7 @@ describe Spree::ReturnRequestsController do
       end
 
       it "returns an error message" do
-        post :create, return_request: { order_id: @order.id, email_address: 'not-a-valid-email-address'}, use_route: "spree"
+        post :create, return_request: { order_number: @order.number, email_address: 'not-a-valid-email-address'}, use_route: "spree"
         response.should render_template :new
         flash[:error].should match(/Order/)
       end
@@ -59,7 +59,7 @@ describe Spree::ReturnRequestsController do
 
       context "when the email address isn't valid for that order" do
         it "returns an error message" do
-          post :create, return_request: { order_id: @order.id, email_address: 'brady.somerville@hitcents.com'}, use_route: "spree"
+          post :create, return_request: { order_number: @order.number, email_address: 'brady.somerville@hitcents.com'}, use_route: "spree"
           response.should render_template :new
           flash[:error].should match(/Email/)
         end
@@ -74,7 +74,7 @@ describe Spree::ReturnRequestsController do
         end
 
         it "returns an error message" do
-          post :create, return_request: { order_id: @order.id, email_address: @order.email}, use_route: "spree"
+          post :create, return_request: { order_number: @order.number, email_address: @order.email}, use_route: "spree"
           response.should render_template :new
           flash[:error].should match(/must have been placed within/)
         end
@@ -82,7 +82,7 @@ describe Spree::ReturnRequestsController do
 
       context "when everything matches up" do
         it "creates the return request and redirects them to the edit form" do
-          post :create, return_request: { order_id: @order.id, email_address: @order.email}, use_route: "spree"
+          post :create, return_request: { order_number: @order.number, email_address: @order.email}, use_route: "spree"
           response.should be_redirect
         end
       end
@@ -126,7 +126,7 @@ describe Spree::ReturnRequestsController do
     describe "choosing quantities" do
       it "doesn't let them return more products than they ordered" do
         line_item = @order.line_items.first
-        put :update, id: @return_request.id, return_request: { return_request_line_items_attributes: [ id: line_item.id, qty: line_item.quantity + 1 ] }, use_route: "spree"
+        put :update, id: @return_request.id, return_request: { return_request_line_items_attributes: [ line_item_id: line_item.id, qty: line_item.quantity + 1 ] }, use_route: "spree"
         response.should render_template :edit
         flash[:error].should match(/can't return more than you purchased/)
       end

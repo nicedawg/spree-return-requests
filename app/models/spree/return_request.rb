@@ -1,4 +1,7 @@
 class Spree::ReturnRequest < ActiveRecord::Base
+
+  scope :for_order_id, ->(order_id) { where("order_id = ?", order_id) }
+
   belongs_to :order
 
   has_many :return_request_line_items, class_name: "Spree::ReturnRequestLineItem"
@@ -6,7 +9,8 @@ class Spree::ReturnRequest < ActiveRecord::Base
   validates :order, presence: true
   validates :email_address, presence: true
 
-  attr_accessible :order, :order_id, :email_address, :return_request_line_items_attributes
+  attr_accessible :order, :order_id, :order_number, :email_address, :return_request_line_items_attributes
+  attr_accessor :order_number
 
   accepts_nested_attributes_for :return_request_line_items
 
@@ -35,6 +39,13 @@ class Spree::ReturnRequest < ActiveRecord::Base
     line_items_returnable
   end
 
+  def dump
+    puts "order_id: #{order_id}\t email_address: #{email_address}"
+    line_items.each do |li|
+      puts "\t#{li.dump}"
+    end
+  end
+
   private
 
     def line_items_returned
@@ -51,14 +62,17 @@ class Spree::ReturnRequest < ActiveRecord::Base
     end
 
     def verify_order_and_email_match
-      raise "Order not found" unless order
-      raise "Email doesn't match" unless order.email == self.email_address
+      unless order && order.email == self.email_address
+        errors.add(:base, "Email doesn't match")
+        return false
+      end
     end
 
     def order_cant_be_too_old_to_return
       max_days = SpreeReturnRequests::Config[:return_request_max_order_age_in_days]
       if self.order.completed_at < max_days.days.ago
-        throw "The order must have been placed within the last #{max_days} in order to be returned."
+        errors.add(:base, "The order must have been placed within the last #{max_days} in order to be returned.")
+        return false
       end
     end
 end
