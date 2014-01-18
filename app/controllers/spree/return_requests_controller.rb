@@ -20,9 +20,11 @@ class Spree::ReturnRequestsController < ApplicationController
   def edit
     @return_request = Spree::ReturnRequest.find(params[:id])
 
-    # build out stub records for items ordered
-    @return_request.order.line_items.each do |li|
-      @return_request.line_items.build(line_item: li)
+    # build out stub records for items ordered if necessary
+    unless @return_request.line_items.any?
+      @return_request.order.line_items.each do |li|
+        @return_request.line_items.build(line_item: li)
+      end
     end
 
     if @return_request.submitted_at
