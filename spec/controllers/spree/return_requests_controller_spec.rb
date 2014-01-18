@@ -47,7 +47,7 @@ describe Spree::ReturnRequestsController do
       it "returns an error message" do
         post :create, return_request: { order_number: @order.number, email_address: 'not-a-valid-email-address'}, use_route: "spree"
         response.should render_template :new
-        flash[:error].should match(/Order/)
+        flash[:error].should match(/order/)
       end
     end
 

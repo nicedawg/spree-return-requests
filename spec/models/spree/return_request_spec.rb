@@ -3,10 +3,10 @@ require 'spec_helper'
 describe Spree::ReturnRequest do
 
   it "has a valid factory" do
-    FactoryGirl.build(:spree_return_request).should be_valid
+    FactoryGirl.build(:spree_return_request, email_address: "test@example.local").should be_valid
   end
 
-  it "requires an order id" do
+  it "requires an order" do
     FactoryGirl.build(:spree_return_request, order_id: nil).should_not be_valid
   end
 

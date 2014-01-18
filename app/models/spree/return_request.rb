@@ -12,6 +12,7 @@ class Spree::ReturnRequest < ActiveRecord::Base
   accepts_nested_attributes_for :return_request_line_items
 
   before_save :find_order_by_number_if_necessary
+  before_save :verify_order_is_present
   before_save :verify_order_and_email_match
   before_save :order_cant_be_too_old_to_return
 
@@ -68,6 +69,13 @@ class Spree::ReturnRequest < ActiveRecord::Base
           errors.add(:base, "Can't find order with that number.")
           return false
         end
+      end
+    end
+
+    def verify_order_is_present
+      unless self.order
+        errors.add(:base, "Order not found.")
+        return false
       end
     end
 
