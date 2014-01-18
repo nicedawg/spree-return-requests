@@ -25,15 +25,14 @@
               <%= f.fields_for :return_request_line_items do |ff| %>
                 <tr>
                   <td>
-                    <%= ff.object.line_item.variant.name_and_sku %>
-                    <br/><%= ff.object.line_item.variant.options_text %>
+                    <%= ff.object.name_and_sku %>
+                    <br/><%= ff.object.options_text %>
                   </td>
-                  <td><%= ff.object.line_item.quantity %></td>
-                  <td>X</td>
+                  <td><%= ff.object.qty_ordered %></td>
+                  <td><%= ff.object.qty_already_returned %></td>
                   <td>
                     <%= ff.hidden_field :id %>
                     <%= ff.text_field :qty %>
-                    X
                   </td>
                 </tr>
               <% end %>

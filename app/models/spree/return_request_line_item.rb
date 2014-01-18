@@ -12,6 +12,14 @@ class Spree::ReturnRequestLineItem < ActiveRecord::Base
 
   validate :not_returning_more_than_ordered
 
+  def name_and_sku
+    line_item ? line_item.variant.name_and_sku : ""
+  end
+
+  def options_text
+    line_item ? line_item.variant.options_text : ""
+  end
+
   def returnable_qty
     qty_ordered - qty_already_returned
   end
