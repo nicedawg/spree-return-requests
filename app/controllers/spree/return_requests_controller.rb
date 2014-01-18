@@ -1,4 +1,7 @@
 class Spree::ReturnRequestsController < ApplicationController
+
+  before_filter :find_return_request, :build_line_items, :prevent_updating_submitted_requests, only: [:edit, :update]
+
   def index
     redirect_to spree.new_return_request_path
   end
@@ -18,23 +21,9 @@ class Spree::ReturnRequestsController < ApplicationController
   end
 
   def edit
-    @return_request = Spree::ReturnRequest.find(params[:id])
-
-    # build out stub records for items ordered if necessary
-    unless @return_request.line_items.any?
-      @return_request.order.line_items.each do |li|
-        @return_request.line_items.build(line_item: li)
-      end
-    end
-
-    if @return_request.submitted_at
-      redirect_to spree.return_requests_url, flash: { error: "You can't edit submitted return requests." } and return
-    end
   end
 
   def update
-    @return_request = Spree::ReturnRequest.find(params[:id])
-
     if @return_request.submitted_at
       redirect_to spree.return_requests_url, flash: { error: "You can't update submitted return requests." } and return
     end
@@ -49,4 +38,22 @@ class Spree::ReturnRequestsController < ApplicationController
       render :edit and return
     end
   end
+
+  private
+
+    def find_return_request
+      @return_request = Spree::ReturnRequest.find(params[:id])
+    end
+
+    def build_line_items
+      unless @return_request.line_items.any?
+        @return_request.order.line_items.each do |li|
+          @return_request.line_items.build(line_item: li)
+        end
+      end
+    end
+
+    def prevent_updating_submitted_requests
+      redirect_to spree.return_requests_url, flash: { error: "You can't edit submitted return requests." } and return if @return_request.submitted_at
+    end
 end

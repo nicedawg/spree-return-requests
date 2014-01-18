@@ -149,7 +149,7 @@ describe Spree::ReturnRequestsController do
       it "redirects the user and explains they can't update submitted requests" do
         put :update, id: @return_request.id, use_route: "spree"
         response.should be_redirect
-        flash[:error].should match(/can't update submitted/)
+        flash[:error].should match(/can't edit submitted/)
       end
     end
   end
