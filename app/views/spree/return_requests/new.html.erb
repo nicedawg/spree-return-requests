@@ -1,5 +1,8 @@
 <div class="new-return-request">
   <%= form_for(:return_request, :url => return_requests_url) do |f| %>
+
+    <%= render :partial => 'spree/shared/error_messages', :locals => { :target => @return_request } %>
+
     <fieldset data-hook="new_return_request_form_fields" class="no-border-top">
       <legend align="center"><%= Spree.t(:new_return_request) %></legend>
 

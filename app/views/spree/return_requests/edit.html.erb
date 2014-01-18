@@ -23,27 +23,25 @@
                 <td>Returning</td>
               </tr>
               <%= f.fields_for :return_request_line_items do |ff| %>
-                <% @return_request.order.line_items.each do |li| %>
-                  <tr>
-                    <td>
-                      <%= li.variant.name_and_sku %>
-                      <br/><%= li.variant.options_text %>
-                    </td>
-                    <td><%= li.quantity %></td>
-                    <td>X</td>
-                    <td>
-                      <%= ff.hidden_field :id %>
-                      <%= ff.text_field :qty %>
-                      X
-                    </td>
-                  </tr>
-                <% end %>
+                <tr>
+                  <td>
+                    <%= ff.object.line_item.variant.name_and_sku %>
+                    <br/><%= ff.object.line_item.variant.options_text %>
+                  </td>
+                  <td><%= ff.object.line_item.quantity %></td>
+                  <td>X</td>
+                  <td>
+                    <%= ff.hidden_field :id %>
+                    <%= ff.text_field :qty %>
+                    X
+                  </td>
+                </tr>
               <% end %>
             </table>
           </div>
         </div>
         <div class="form-buttons filter-actions actions" data-hook="buttons">
-          <%= button Spree.t(:edit_return_request), 'icon-arrow-right' %>
+          <%= button Spree.t(:update_return_request), 'icon-arrow-right' %>
         </div>
       </div>
     </fieldset>

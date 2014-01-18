@@ -2,4 +2,8 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  spree:
+    new_return_request: New Return Request
+    edit_return_request: Edit Return Request
+    update_return_request: Update Return Request
+    email_address: Email Address
