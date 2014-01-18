@@ -6,16 +6,16 @@ class Spree::ReturnRequest < ActiveRecord::Base
 
   has_many :return_request_line_items, class_name: "Spree::ReturnRequestLineItem"
 
-  validates :order, presence: true
-  validates :email_address, presence: true
-
   attr_accessible :order, :order_id, :order_number, :email_address, :return_request_line_items_attributes
   attr_accessor :order_number
 
   accepts_nested_attributes_for :return_request_line_items
 
+  before_save :find_order_by_number_if_necessary
   before_save :verify_order_and_email_match
   before_save :order_cant_be_too_old_to_return
+
+  validates :email_address, presence: true
 
   def line_items
     self.return_request_line_items
@@ -59,6 +59,16 @@ class Spree::ReturnRequest < ActiveRecord::Base
         end
       end
       returned
+    end
+
+    def find_order_by_number_if_necessary
+      if order_number && ! order
+        self.order = Spree::Order.where(number: order_number).first
+        unless self.order
+          errors.add(:base, "Can't find order with that number.")
+          return false
+        end
+      end
     end
 
     def verify_order_and_email_match

@@ -7,10 +7,6 @@ class Spree::ReturnRequestsController < ApplicationController
   end
 
   def create
-    order_number = params[:return_request].delete("order_number")
-    order = Spree::Order.where(number: order_number).first
-    params[:return_request][:order] = order
-
     @return_request = Spree::ReturnRequest.new(params[:return_request])
 
     if @return_request.save

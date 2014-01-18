@@ -96,11 +96,6 @@ describe Spree::ReturnRequestsController do
       @return_request = Spree::ReturnRequest.create(order: @order, email_address: @order.email)
     end
 
-    it "contains order header details" do
-      get :edit, id: @return_request.id, use_route: "spree"
-      expect(assigns(:order)).to eq @order
-    end
-
     context "when the return request is marked as submitted" do
 
       before do
