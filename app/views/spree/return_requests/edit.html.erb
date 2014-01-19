@@ -39,6 +39,10 @@
               <% end %>
             </table>
           </div>
+          <div class="field">
+            <%= f.label :ready_to_submit, Spree.t(:ready_to_submit) %>
+            <%= f.check_box :ready_to_submit %>
+          </div>
         </div>
         <div class="form-buttons filter-actions actions" data-hook="buttons">
           <%= button Spree.t(:update_return_request), 'icon-arrow-right' %>

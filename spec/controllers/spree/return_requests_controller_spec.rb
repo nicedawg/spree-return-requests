@@ -127,15 +127,28 @@ describe Spree::ReturnRequestsController do
       end
     end
 
-    it "marks the request as submitted" do
-      line_item = @order.line_items.first
-      put :update, id: @return_request.id, return_request: { return_request_line_items_attributes: [ line_item_id: line_item.id, qty: 0 ] }, use_route: "spree"
-      @return_request.reload.submitted_at.should_not be_nil
-    end
+    context "when marked as ready to submit" do
 
-    it "marks the request as 'pending'" do
-      put :update, id: @return_request.id, use_route: "spree"
-      @return_request.reload.status.should == "pending"
+      before do
+        line_item = @order.line_items.first
+        @params = {
+          id: @return_request.id,
+          return_request: {
+            ready_to_submit: true,
+            return_request_line_items_attributes: [ line_item_id: line_item.id, qty: 0 ]
+          },
+          use_route: "spree"
+        }
+        put :update, @params
+      end
+
+      it "marks the request as submitted" do
+        @return_request.reload.submitted_at.should_not be_nil
+      end
+
+      it "marks the request as 'pending'" do
+        @return_request.reload.status.should == "pending"
+      end
     end
 
     it "sends the customer an email confirmation of their request"

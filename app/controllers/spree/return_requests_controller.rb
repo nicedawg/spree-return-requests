@@ -26,9 +26,6 @@ class Spree::ReturnRequestsController < ApplicationController
 
   def update
     if @return_request.update_attributes(params[:return_request])
-      @return_request.submitted_at = DateTime.now
-      @return_request.status = "pending"
-      @return_request.save!
       redirect_to spree.edit_return_request_url(@return_request), flash: { success: "Return request updated." } and return
     else
       flash.now[:error] = @return_request.errors.full_messages.to_sentence

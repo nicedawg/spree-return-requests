@@ -6,8 +6,8 @@ class Spree::ReturnRequest < ActiveRecord::Base
 
   has_many :return_request_line_items, class_name: "Spree::ReturnRequestLineItem"
 
-  attr_accessible :order, :order_id, :order_number, :email_address, :return_request_line_items_attributes
-  attr_accessor :order_number
+  attr_accessible :order, :order_id, :order_number, :email_address, :return_request_line_items_attributes, :ready_to_submit
+  attr_accessor :order_number, :ready_to_submit
 
   accepts_nested_attributes_for :return_request_line_items
 
@@ -15,6 +15,7 @@ class Spree::ReturnRequest < ActiveRecord::Base
   before_save :verify_order_is_present
   before_save :verify_order_and_email_match
   before_save :order_cant_be_too_old_to_return
+  before_save :mark_as_submitted_if_ready_to_submit
 
   validates :email_address, presence: true
 
@@ -91,6 +92,13 @@ class Spree::ReturnRequest < ActiveRecord::Base
       if self.order.completed_at < max_days.days.ago
         errors.add(:base, "The order must have been placed within the last #{max_days} in order to be returned.")
         return false
+      end
+    end
+
+    def mark_as_submitted_if_ready_to_submit
+      if ready_to_submit
+        self.submitted_at = DateTime.now
+        self.status = "pending"
       end
     end
 end
