@@ -159,6 +159,10 @@ describe Spree::ReturnRequestsController do
       it "sends the customer an email confirmation of their request" do
         Spree::ReturnRequestsMailer.should_receive(:submitted)
       end
+
+      it "sends the admin  an email notification of their request" do
+        Spree::ReturnRequestsMailer.should_receive(:submitted_admin)
+      end
     end
 
     context "when not marked as ready to submit" do

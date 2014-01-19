@@ -28,6 +28,7 @@ class Spree::ReturnRequestsController < ApplicationController
     if @return_request.update_attributes(params[:return_request])
       if @return_request.reload.submitted_at
         Spree::ReturnRequestsMailer.submitted(@return_request).deliver
+        Spree::ReturnRequestsMailer.submitted_admin(@return_request).deliver
         render :thank_you
         return
       end

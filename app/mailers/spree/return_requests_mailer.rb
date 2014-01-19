@@ -13,6 +13,16 @@ class Spree::ReturnRequestsMailer < ActionMailer::Base
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
   #
+  #   en.spree.return_requests.submitted_admin.subject
+  #
+  def submitted_admin(return_request)
+    @return_request = return_request
+    mail to: SpreeReturnRequests::Config[:return_request_admin_notification_email], subject: "A customer submitted a return request"
+  end
+
+  # Subject can be set in your I18n file at config/locales/en.yml
+  # with the following lookup:
+  #
   #   en.spree.return_requests.approved.subject
   #
   def approved(return_request)
