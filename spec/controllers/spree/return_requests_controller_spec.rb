@@ -128,7 +128,8 @@ describe Spree::ReturnRequestsController do
     end
 
     it "marks the request as submitted" do
-      put :update, id: @return_request.id, use_route: "spree"
+      line_item = @order.line_items.first
+      put :update, id: @return_request.id, return_request: { return_request_line_items_attributes: [ line_item_id: line_item.id, qty: 0 ] }, use_route: "spree"
       @return_request.reload.submitted_at.should_not be_nil
     end
 

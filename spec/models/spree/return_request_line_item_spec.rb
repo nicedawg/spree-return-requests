@@ -8,9 +8,9 @@ describe Spree::ReturnRequestLineItem do
   end
 
   describe "qty" do
-    it "does not allow non-positive numbers" do
+    it "does not allow negative numbers" do
       return_request = FactoryGirl.build(:spree_return_request)
-      FactoryGirl.build(:spree_return_request_line_item, return_request: return_request, qty: 0).should_not be_valid
+      FactoryGirl.build(:spree_return_request_line_item, return_request: return_request, qty: -1).should_not be_valid
     end
   end
 end

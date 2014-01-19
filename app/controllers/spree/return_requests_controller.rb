@@ -44,7 +44,7 @@ class Spree::ReturnRequestsController < ApplicationController
     def build_line_items
       unless @return_request.line_items.any?
         @return_request.order.line_items.each do |li|
-          @return_request.line_items.build(line_item: li)
+          @return_request.line_items.build(line_item: li, qty: 0)
         end
       end
     end
