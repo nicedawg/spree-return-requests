@@ -1,6 +1,7 @@
 class Spree::ReturnRequestsController < ApplicationController
 
-  before_filter :find_return_request, :build_line_items, :prevent_updating_submitted_requests, only: [:edit, :update]
+  before_filter :find_return_request, :prevent_updating_submitted_requests, only: [:edit, :update]
+  before_filter :build_line_items, only: [:edit]
 
   def index
     redirect_to spree.new_return_request_path
