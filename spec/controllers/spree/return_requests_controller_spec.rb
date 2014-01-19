@@ -151,6 +151,10 @@ describe Spree::ReturnRequestsController do
       it "marks the request as 'pending'" do
         @return_request.reload.status.should == "pending"
       end
+
+      it "redirects to a confirmation page" do
+        response.should render_template :thank_you
+      end
     end
 
     context "when not marked as ready to submit" do
