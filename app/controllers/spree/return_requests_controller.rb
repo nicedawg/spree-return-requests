@@ -24,10 +24,6 @@ class Spree::ReturnRequestsController < ApplicationController
   end
 
   def update
-    if @return_request.submitted_at
-      redirect_to spree.return_requests_url, flash: { error: "You can't update submitted return requests." } and return
-    end
-
     if @return_request.update_attributes(params[:return_request])
       @return_request.submitted_at = DateTime.now
       @return_request.status = "pending"
