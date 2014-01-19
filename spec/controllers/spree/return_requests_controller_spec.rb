@@ -156,7 +156,7 @@ describe Spree::ReturnRequestsController do
     context "when not marked as ready to submit" do
 
       before do
-        @params[:return_request][:ready_to_submit] = false
+        @params[:return_request][:ready_to_submit] = "0"
       end
 
       it "does not mark the request as submitted" do

@@ -15,7 +15,7 @@ class Spree::ReturnRequest < ActiveRecord::Base
   before_save :verify_order_is_present
   before_save :verify_order_and_email_match
   before_save :order_cant_be_too_old_to_return
-  before_save :mark_as_submitted_if_ready_to_submit
+  after_save :mark_as_submitted_if_ready_to_submit
 
   validates :email_address, presence: true
 
@@ -96,9 +96,10 @@ class Spree::ReturnRequest < ActiveRecord::Base
     end
 
     def mark_as_submitted_if_ready_to_submit
-      if self.ready_to_submit
+      if self.ready_to_submit && self.ready_to_submit != "0"
         self.submitted_at = DateTime.now
         self.status = "pending"
+        self.save!
       end
     end
 end
