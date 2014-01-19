@@ -155,6 +155,10 @@ describe Spree::ReturnRequestsController do
       it "redirects to a confirmation page" do
         response.should render_template :thank_you
       end
+
+      it "sends the customer an email confirmation of their request" do
+        Spree::ReturnRequestsMailer.should_receive(:submitted)
+      end
     end
 
     context "when not marked as ready to submit" do
@@ -171,8 +175,6 @@ describe Spree::ReturnRequestsController do
         @return_request.reload.status.should_not == "pending"
       end
     end
-
-    it "sends the customer an email confirmation of their request"
 
     context "when the return request is marked as submitted" do
 
