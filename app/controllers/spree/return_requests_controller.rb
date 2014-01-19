@@ -48,6 +48,6 @@ class Spree::ReturnRequestsController < ApplicationController
     end
 
     def prevent_updating_submitted_requests
-      redirect_to spree.return_requests_url, flash: { error: "You can't edit submitted return requests." } and return if @return_request.submitted_at
+      redirect_to spree.new_return_request_url, flash: { error: "You can't edit submitted return requests." } and return if @return_request.submitted_at
     end
 end
