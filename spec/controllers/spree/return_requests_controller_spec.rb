@@ -116,12 +116,22 @@ describe Spree::ReturnRequestsController do
     before do
       @order = FactoryGirl.create(:shipped_order)
       @return_request = Spree::ReturnRequest.create(order: @order, email_address: @order.email)
+
+      @line_item = @order.line_items.first
+      @params = {
+        id: @return_request.id,
+        return_request: {
+          ready_to_submit: false,
+          return_request_line_items_attributes: [ line_item_id: @line_item.id, qty: 0 ]
+        },
+        use_route: "spree"
+      }
     end
 
     describe "choosing quantities" do
       it "doesn't let them return more products than they ordered" do
-        line_item = @order.line_items.first
-        put :update, id: @return_request.id, return_request: { return_request_line_items_attributes: [ line_item_id: line_item.id, qty: line_item.quantity + 1 ] }, use_route: "spree"
+        @params[:return_request][:return_request_line_items_attributes][0][:qty] = @line_item.quantity + 1
+        put :update, @params
         response.should render_template :edit
         flash[:error].should match(/can't return more than you purchased/)
       end
@@ -130,15 +140,7 @@ describe Spree::ReturnRequestsController do
     context "when marked as ready to submit" do
 
       before do
-        line_item = @order.line_items.first
-        @params = {
-          id: @return_request.id,
-          return_request: {
-            ready_to_submit: true,
-            return_request_line_items_attributes: [ line_item_id: line_item.id, qty: 0 ]
-          },
-          use_route: "spree"
-        }
+        @params[:return_request][:ready_to_submit] = true
         put :update, @params
       end
 
@@ -148,6 +150,21 @@ describe Spree::ReturnRequestsController do
 
       it "marks the request as 'pending'" do
         @return_request.reload.status.should == "pending"
+      end
+    end
+
+    context "when not marked as ready to submit" do
+
+      before do
+        @params[:return_request][:ready_to_submit] = false
+      end
+
+      it "does not mark the request as submitted" do
+        @return_request.reload.submitted_at.should be_nil
+      end
+
+      it "does not mark the request as 'pending'" do
+        @return_request.reload.status.should_not == "pending"
       end
     end
 

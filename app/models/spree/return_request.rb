@@ -96,7 +96,7 @@ class Spree::ReturnRequest < ActiveRecord::Base
     end
 
     def mark_as_submitted_if_ready_to_submit
-      if ready_to_submit
+      if self.ready_to_submit
         self.submitted_at = DateTime.now
         self.status = "pending"
       end
