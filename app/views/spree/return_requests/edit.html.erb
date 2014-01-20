@@ -40,6 +40,10 @@
             </table>
           </div>
           <div class="field">
+            <%= f.label :reason, Spree.t(:reason) %>
+            <%= f.text_area :reason %>
+          </div>
+          <div class="field">
             <%= f.label :ready_to_submit, Spree.t(:ready_to_submit) %>
             <%= f.check_box :ready_to_submit %>
           </div>
