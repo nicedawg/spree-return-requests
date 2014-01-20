@@ -1,0 +1,40 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:return_requests) %>
+<% end %>
+
+<ul>
+  <% @types.each do |type| %>
+    <li>
+      <% if type == params[:type] %>
+        <%= type %>
+      <% else %>
+        <%= link_to type, admin_return_requests_path(type: type) %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>
+
+<% if @requests.any? %>
+  <table>
+    <thead>
+      <tr>
+        <th>Request ID</th>
+        <th>Order</th>
+        <th>Submitted</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% @requests.each do |r| %>
+      <tr>
+        <td><%= link_to r.id, admin_return_request_path(r) %></td>
+        <td><%= link_to r.order.number, edit_admin_order_path(r.order) %></td>
+        <td><%= r.submitted_at %></td>
+        <td><%= link_to "View", admin_return_request_path(r) %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  There are no <%= params[:type] %> Return Requests right now.
+<% end %>
