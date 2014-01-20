@@ -1,0 +1,45 @@
+<% content_for :page_title do %>
+  <%= Spree.t(:return_requests) %>
+<% end %>
+
+<dl>
+  <dt>Order Number</dt>
+  <dd><%= link_to @return_request.order.number, edit_admin_order_path(@return_request.order) %></dd>
+
+  <dt>Email Address</dt>
+  <dd><%= @return_request.email_address %></dd>
+</dl>
+
+<div data-hook="return_request_fields" class="row">
+  <div class="field">
+    <table>
+      <tr>
+        <td>Item</td>
+        <td>Purchased</td>
+        <td>Already Returned</td>
+        <td>Returning</td>
+      </tr>
+      <% @return_request.line_items.each do |li| %>
+        <tr>
+          <td>
+            <%= li.name_and_sku %>
+            <br/><%= li.options_text %>
+          </td>
+          <td><%= li.qty_ordered %></td>
+          <td><%= li.qty_already_returned %></td>
+          <td><%= li.qty %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <div class="field">
+    <h3><%= Spree.t(:reason) %></h3>
+    <div>
+      <%= @return_request.reason %>
+    </div>
+  </div>
+  <div class="form-buttons filter-actions actions" data-hook="buttons">
+    <%= button Spree.t(:approve_return_request), 'icon-check approve-return-request' %>
+    <%= button Spree.t(:deny_return_request), 'icon-remove-sign deny-return-request' %>
+  </div>
+</div>

@@ -1,3 +1,11 @@
 /*
  *= require admin/spree_backend
 */
+
+button.deny-return-request {
+  background-color: red;
+}
+
+button.approve-return-request {
+  background-color: green;
+}
