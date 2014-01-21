@@ -16,12 +16,15 @@
         <div class="alpha twelve columns">
           <div class="field">
             <table>
-              <tr>
-                <td>Item</td>
-                <td>Purchased</td>
-                <td>Already Returned</td>
-                <td>Returning</td>
-              </tr>
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Purchased</th>
+                  <th>Already Returned</th>
+                  <th>Returning</th>
+                </tr>
+              </thead>
+              <tbody>
               <%= f.fields_for :return_request_line_items do |ff| %>
                 <tr>
                   <td>
@@ -37,6 +40,7 @@
                   </td>
                 </tr>
               <% end %>
+              </tbody>
             </table>
           </div>
           <div class="field">
