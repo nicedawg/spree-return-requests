@@ -1,18 +1,18 @@
-<% content_for :page_title do %>
-  <%= Spree.t(:return_requests) %>
+<% content_for :sub_menu do %>
+  <nav id="sub-menu">
+    <ul id="sub_nav" class="inline-menu">
+      <% @types.each do |type| %>
+        <li <%= type == params[:type] ? 'class="selected"' : "" %>>
+          <%= link_to type, admin_return_requests_path(type: type) %>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
 <% end %>
 
-<ul>
-  <% @types.each do |type| %>
-    <li>
-      <% if type == params[:type] %>
-        <%= type %>
-      <% else %>
-        <%= link_to type, admin_return_requests_path(type: type) %>
-      <% end %>
-    </li>
-  <% end %>
-</ul>
+<% content_for :page_title do %>
+  <%= params[:type].titleize %> <%= Spree.t(:return_requests) %>
+<% end %>
 
 <% if @requests.any? %>
   <table>
