@@ -8,5 +8,6 @@ en:
     update_return_request: Update Return Request
     approve_return_request: Approve Return Request
     deny_return_request: Deny Return Request
+    order_number: Order Number
     email_address: Email Address
     ready_to_submit: Ready to Submit?
