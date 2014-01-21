@@ -5,6 +5,7 @@ class Spree::ReturnRequest < ActiveRecord::Base
   scope :by_status, ->(status) { where(status: status) }
 
   belongs_to :order
+  belongs_to :return_authorization
 
   has_many :return_request_line_items, class_name: "Spree::ReturnRequestLineItem"
 
