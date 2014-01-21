@@ -9,3 +9,7 @@ button.deny-return-request {
 button.approve-return-request {
   background-color: green;
 }
+
+.actions form {
+  display: inline;
+}
