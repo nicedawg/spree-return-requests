@@ -26,6 +26,7 @@ class Spree::ReturnRequestsMailer < ActionMailer::Base
   #   en.spree.return_requests.approved.subject
   #
   def approved(return_request)
+    @return_request = return_request
     mail to: return_request.email_address, subject: "Your return request has been approved"
   end
 end
