@@ -51,7 +51,30 @@ class Spree::ReturnRequest < ActiveRecord::Base
     end
   end
 
+  def approve!
+    self.status = "approved"
+    self.return_authorization = build_return_authorization
+    self.save!
+  end
+
   private
+
+    def build_return_authorization
+      ra = Spree::ReturnAuthorization.new
+      ra.order = self.order
+      ra.reason = self.reason
+
+      ra.amount = 0
+      self.line_items.each do |rr_li|
+        if rr_li.qty > 0
+          ra.add_variant rr_li.line_item.variant_id, rr_li.qty if rr_li.qty > 0
+          ra.amount += rr_li.line_item.amount
+        end
+      end
+
+      ra.save!
+      ra
+    end
 
     def line_items_returned
       returned = {}
