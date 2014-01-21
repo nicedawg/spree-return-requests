@@ -4,6 +4,7 @@ class Spree::Admin::ReturnRequestsController < Spree::Admin::ResourceController
 
   def index
     @types = %w[pending approved denied]
+    params.delete(:type) unless @types.include?(params[:type])
     params[:type] ||= "pending"
     @requests = Spree::ReturnRequest.submitted.by_status(params[:type])
   end
