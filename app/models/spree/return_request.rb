@@ -79,7 +79,7 @@ class Spree::ReturnRequest < ActiveRecord::Base
     def line_items_returned
       returned = {}
 
-      return_requests = Spree::ReturnRequest.where(order_id: order.id)
+      return_requests = Spree::ReturnRequest.where("order_id = ? AND submitted_at IS NOT NULL", order.id)
       return_requests.each do |r|
         r.line_items.each do |l|
           returned[l.line_item_id] = 0 if returned[l.line_item_id].nil?

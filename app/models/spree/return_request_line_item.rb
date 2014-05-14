@@ -29,8 +29,12 @@ class Spree::ReturnRequestLineItem < ActiveRecord::Base
     # TODO: make sure it only considers approved RAs and RRs
     already_returned = 0
     if return_request
-      return_requests = Spree::ReturnRequest.for_order_id(return_request.order_id)
-      # TODO: refactor this
+
+      return_requests = Spree::ReturnRequest.for_order_id(return_request.order_id).reject do |rr|
+        # don't consider return requests that were denied or not yet submitted
+        rr.submitted_at == nil || rr.status == "denied"
+      end
+
       return_requests.each do |rr|
         rr.line_items.each do |li|
           if li.line_item_id == self.line_item_id
