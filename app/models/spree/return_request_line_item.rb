@@ -2,8 +2,6 @@ class Spree::ReturnRequestLineItem < ActiveRecord::Base
   belongs_to :return_request
   belongs_to :line_item
 
-  attr_accessible :line_item, :line_item_id, :qty
-
   validates :qty, numericality: {
     only_integer: true,
     greater_than_or_equal_to: 0,

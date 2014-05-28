@@ -9,7 +9,6 @@ class Spree::ReturnRequest < ActiveRecord::Base
 
   has_many :return_request_line_items, class_name: "Spree::ReturnRequestLineItem"
 
-  attr_accessible :order, :order_id, :order_number, :email_address, :return_request_line_items_attributes, :ready_to_submit, :reason
   attr_accessor :order_number, :ready_to_submit
 
   accepts_nested_attributes_for :return_request_line_items

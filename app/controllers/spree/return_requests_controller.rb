@@ -11,7 +11,7 @@ class Spree::ReturnRequestsController < Spree::StoreController
   end
 
   def create
-    @return_request = Spree::ReturnRequest.new(params[:return_request])
+    @return_request = Spree::ReturnRequest.new(permitted_params)
 
     if @return_request.save
       redirect_to spree.edit_return_request_path(@return_request)
@@ -25,7 +25,7 @@ class Spree::ReturnRequestsController < Spree::StoreController
   end
 
   def update
-    if @return_request.update_attributes(params[:return_request])
+    if @return_request.update_attributes(permitted_params)
       if @return_request.reload.submitted_at
         Spree::ReturnRequestsMailer.submitted(@return_request).deliver
         Spree::ReturnRequestsMailer.submitted_admin(@return_request).deliver
@@ -40,6 +40,10 @@ class Spree::ReturnRequestsController < Spree::StoreController
   end
 
   private
+
+    def permitted_params
+      params.require(:return_request).permit(:order, :order_id, :order_number, :email_address, :ready_to_submit, :reason, :return_request_line_items_attributes => [:line_item, :line_item_id, :qty])
+    end
 
     def find_return_request
       @return_request = Spree::ReturnRequest.find(params[:id])
