@@ -40,10 +40,10 @@
   </div>
   <div class="form-buttons filter-actions actions" data-hook="buttons">
     <% if @return_request.status == "pending" %>
-      <%= form_for(@return_request, url: approve_admin_return_request_path) do |f| %>
+      <%= form_for(@return_request, url: approve_admin_return_request_path, method: :put) do |f| %>
         <%= button Spree.t(:approve_return_request), 'icon-check approve-return-request' %>
       <% end %>
-      <%= form_for(@return_request, url: deny_admin_return_request_path) do |f| %>
+      <%= form_for(@return_request, url: deny_admin_return_request_path, method: :put) do |f| %>
         <%= button Spree.t(:deny_return_request), 'icon-remove-sign deny-return-request' %>
       <% end %>
     <% end %>
