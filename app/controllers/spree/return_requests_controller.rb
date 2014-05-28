@@ -1,4 +1,4 @@
-class Spree::ReturnRequestsController < ApplicationController
+class Spree::ReturnRequestsController < Spree::StoreController
 
   before_filter :find_return_request, :prevent_updating_submitted_requests, only: [:edit, :update]
   before_filter :build_line_items, only: [:edit]
