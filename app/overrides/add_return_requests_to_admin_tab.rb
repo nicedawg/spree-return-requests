@@ -1,5 +1,5 @@
 Deface::Override.new(
-  virtual_path: 'spree/layouts/admin',
+  virtual_path: 'spree/admin/shared/_menu',
   name: 'add_return_requests_to_admin_tab',
   insert_top: '[data-hook="admin_tabs"]',
   text: '
