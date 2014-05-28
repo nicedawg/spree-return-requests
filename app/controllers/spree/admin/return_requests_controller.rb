@@ -13,12 +13,13 @@ class Spree::Admin::ReturnRequestsController < Spree::Admin::ResourceController
   end
 
   def approve
-    if @return_request.approve!
+    begin
+      @return_request.approve!
       Spree::ReturnRequestsMailer.approved(@return_request).deliver
       redirect_to edit_admin_order_return_authorization_url(@return_request.order.number, @return_request.return_authorization), flash: { success: "Return Request approved." }
-    else
-      flash.now[:error] = "Failed to approve return request."
-      render :show
+    rescue Exception => e
+      flash[:error] = "Failed to approve return request: #{e.message}"
+      redirect_to admin_return_request_url(@return_request) and return
     end
   end
 
