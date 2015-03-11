@@ -23,8 +23,11 @@ describe Spree::ReturnRequest do
 
     it "requires the order be younger than a configurable number of days" do
       SpreeReturnRequests::Config[:return_request_max_order_age_in_days] = 30
-      order = FactoryGirl.create(:shipped_order, completed_at: 31.days.ago)
+      order = FactoryGirl.create(:shipped_order)
+      order.completed_at = 31.days.ago
+      order.save!
       return_request = Spree::ReturnRequest.new(order: order, email_address: order.email)
+
       expect { return_request.save! }.to raise_error
     end
   end
@@ -49,7 +52,7 @@ describe Spree::ReturnRequest do
         @order = FactoryGirl.create(:shipped_order)
 
         # create a return request for all of the order's first line item
-        previous_return_request = Spree::ReturnRequest.create!(order: @order, email_address: @order.email)
+        previous_return_request = Spree::ReturnRequest.create!(order: @order, email_address: @order.email, submitted_at: 1.day.ago)
         previous_return_request.line_items << Spree::ReturnRequestLineItem.create!(line_item: @order.line_items.first, qty: @order.line_items.first.quantity)
         @line_item_returned = previous_return_request.line_items.first
 
@@ -68,12 +71,12 @@ describe Spree::ReturnRequest do
         @order = FactoryGirl.create(:shipped_order)
 
         # create a return request for all of the order's first line item
-        @previous_return_request = Spree::ReturnRequest.create!(order: @order, email_address: @order.email)
+        @previous_return_request = Spree::ReturnRequest.create!(order: @order, email_address: @order.email, submitted_at: 7.days.ago)
         line_item = @order.line_items.first
         @previous_return_request.line_items << Spree::ReturnRequestLineItem.create!(line_item: line_item, qty: line_item.quantity)
 
         # and then create a return request for all of the order's second line item
-        @previous_return_request_2 = Spree::ReturnRequest.create!(order: @order, email_address: @order.email)
+        @previous_return_request_2 = Spree::ReturnRequest.create!(order: @order, email_address: @order.email, submitted_at: 3.days.ago)
         line_item = @order.line_items.second
         @previous_return_request_2.line_items << Spree::ReturnRequestLineItem.create!(line_item: line_item, qty: line_item.quantity)
 

@@ -2,7 +2,9 @@ require 'spec_helper'
 
 describe Spree::ReturnRequestsController do
 
-  render_views
+  before :each do
+    sign_in nil
+  end
 
   it "should use Spree::ReturnRequestsController" do
     controller.should be_an_instance_of(Spree::ReturnRequestsController)
@@ -141,27 +143,31 @@ describe Spree::ReturnRequestsController do
 
       before do
         @params[:return_request][:ready_to_submit] = true
-        put :update, @params
       end
 
       it "marks the request as submitted" do
+        put :update, @params
         @return_request.reload.submitted_at.should_not be_nil
       end
 
       it "marks the request as 'pending'" do
+        put :update, @params
         @return_request.reload.status.should == "pending"
       end
 
       it "redirects to a confirmation page" do
+        put :update, @params
         response.should render_template :thank_you
       end
 
       it "sends the customer an email confirmation of their request" do
-        Spree::ReturnRequestsMailer.should_receive(:submitted)
+        expect(Spree::ReturnRequestsMailer).to receive(:submitted).and_call_original
+        put :update, @params
       end
 
-      it "sends the admin  an email notification of their request" do
-        Spree::ReturnRequestsMailer.should_receive(:submitted_admin)
+      it "sends the admin an email notification of their request" do
+        expect(Spree::ReturnRequestsMailer).to receive(:submitted_admin).and_call_original
+        put :update, @params
       end
     end
 
