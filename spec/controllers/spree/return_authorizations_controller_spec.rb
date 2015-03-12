@@ -51,5 +51,18 @@ describe Spree::ReturnAuthorizationsController do
         flash[:error].should match(/shipped/)
       end
     end
+
+    context 'when order is past return window' do
+      it 'should redirect back with a flash message' do
+        controller.stub spree_current_user: @user
+        SpreeReturnRequests::Config[:return_request_max_order_age_in_days] = 10
+        @order.completed_at = 11.days.ago
+        @order.save!
+
+        get :new, order_id: @order.number, use_route: 'spree'
+
+        flash[:error].should match(/return window/i)
+      end
+    end
   end
 end
