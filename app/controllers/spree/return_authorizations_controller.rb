@@ -15,6 +15,8 @@ module Spree
 
       if @return_authorization.save!
         (params[:return_quantity] || []).each { |variant_id, qty| @return_authorization.add_variant(variant_id.to_i, qty.to_i) }
+        @return_authorization.amount = @return_authorization.compute_returned_amount
+        @return_authorization.save!
 
         redirect_to spree.new_return_request_path, flash: { success: Spree.t(:return_requests_return_authorization_succesfully_created) }
         return

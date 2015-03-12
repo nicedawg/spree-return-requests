@@ -73,6 +73,9 @@ describe Spree::ReturnAuthorizationsController do
         return_authorization: {
           reason: 'Heyya',
         },
+        return_quantity: {
+          @order.line_items.first.variant_id => 1,
+        },
         order_id: @order.number,
         use_route: 'spree',
       }
@@ -155,6 +158,13 @@ describe Spree::ReturnAuthorizationsController do
         @return_authorization = Spree::ReturnAuthorization.last
 
         @return_authorization.reason.should eq reason
+      end
+
+      it 'should compute the amount returned automatically' do
+        post :create, @params
+        @return_authorization = Spree::ReturnAuthorization.last
+
+        @return_authorization.amount.should eq @return_authorization.compute_returned_amount
       end
     end
   end
