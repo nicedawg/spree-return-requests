@@ -1,7 +1,7 @@
 class Spree::ReturnRequest < ActiveRecord::Base
 
   scope :for_order_id, ->(order_id) { where("order_id = ?", order_id) }
-  scope :submitted, where("submitted_at IS NOT NULL")
+  scope :submitted, -> { where("submitted_at IS NOT NULL") }
   scope :by_status, ->(status) { where(status: status) }
 
   belongs_to :order
