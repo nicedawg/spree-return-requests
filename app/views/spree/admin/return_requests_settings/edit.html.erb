@@ -1,0 +1,24 @@
+<%= render :partial => 'spree/admin/shared/configuration_menu' %>
+
+<% content_for :page_title do %>
+  <%= Spree.t(:return_requests_settings) %>
+<% end %>
+
+<%= form_tag admin_return_requests_settings_path, :method => :put do %>
+  <div id="preferences" data-hook>
+    <fieldset class="general no-border-top">
+       <div class="field">
+        <%= label_tag(:return_request_max_order_age_in_days, Spree.t(:return_requests_max_order_age_in_days)) + tag(:br) %>
+        <%= preference_field_tag(:return_request_max_order_age_in_days, SpreeReturnRequests::Config[:return_request_max_order_age_in_days], :type => :integer) %>
+      </div>
+      <div class="field">
+        <%= label_tag(:return_request_intro_text, Spree.t(:return_requests_intro_text)) + tag(:br) %>
+        <%= preference_field_tag(:return_request_intro_text, SpreeReturnRequests::Config[:return_request_intro_text], type: :text) %>
+      </div>
+
+      <div class="form-buttons filter-actions actions" data-hook="buttons">
+        <%= button Spree.t('actions.update'), 'icon-refresh' %>
+      </div>
+    </fieldset>
+  </div>
+<% end %>

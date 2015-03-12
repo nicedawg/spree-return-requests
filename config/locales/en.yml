@@ -11,3 +11,4 @@ en:
     order_number: Order Number
     email_address: Email Address
     ready_to_submit: Ready to Submit?
+    return_requests_settings: Return Requests Settings

@@ -1,0 +1,2 @@
+<!-- insert_bottom '.sidebar' -->
+<%= configurations_sidebar_menu_item Spree.t(:return_requests), edit_admin_return_requests_settings_path %>
