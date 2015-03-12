@@ -1,4 +1,5 @@
 <%= render :partial => 'spree/shared/error_messages', :locals => { :target => @return_authorization } %>
+<h1><%= Spree.t(:return_request_authorization) %></h1>
 <%= form_for [@order, @return_authorization] do |f| %>
   <fieldset class="no-border-top">
     <%= render :partial => 'form', :locals => { :f => f } %>

@@ -9,6 +9,20 @@ module Spree
       @return_authorization = Spree::ReturnAuthorization.new(order: @order)
     end
 
+    def create
+      @return_authorization = Spree::ReturnAuthorization.new(permitted_params)
+      @return_authorization.order = @order
+
+      if @return_authorization.save!
+        (params[:return_quantity] || []).each { |variant_id, qty| @return_authorization.add_variant(variant_id.to_i, qty.to_i) }
+
+        redirect_to spree.new_return_request_path, flash: { success: Spree.t(:return_requests_return_authorization_succesfully_created) }
+        return
+      else
+        render :new
+      end
+    end
+
     private
 
       def check_authorization
@@ -31,6 +45,10 @@ module Spree
           redirect_to destination, flash: { error: Spree.t(:return_requests_order_not_within_return_window) }
           return
         end
+      end
+
+      def permitted_params
+        params.require(:return_authorization).permit(:order_id, :return_quantity, :reason)
       end
   end
 end
