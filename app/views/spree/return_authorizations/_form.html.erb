@@ -34,7 +34,7 @@
       <tr>
         <td colspan="3" style="text-align: right;">RMA Amount</td>
         <td class="align-right">
-          <span id="rma_value">0.00</span>
+          <span id="rma_value">$0.00</span>
         </td>
       </tr>
     </tfoot>
@@ -49,9 +49,8 @@
 
 <script>
   var line_item_prices = {};
-  <% @return_authorization.order.line_items.group_by(&:variant).each do | variant, items| %>
-    // TODO: make this array contain prices that reflect discounts
-    line_item_prices[<%= variant.id.to_s %>] = <%= items.first.price %>;
+  <% @return_authorization.order.line_items.group_by(&:variant).each do |variant, items| %>
+    line_item_prices[<%= variant.id.to_s %>] = <%= items.first.inventory_units.first.price_after_discounts %>;
   <% end %>
 
   $(document).ready(function(){
@@ -65,7 +64,7 @@
       });
 
       if(!isNaN(rma_amount)){
-        $("span#rma_value").html(rma_amount.toFixed(2));
+        $("span#rma_value").html('$' + rma_amount.toFixed(2));
       }
     })
   });

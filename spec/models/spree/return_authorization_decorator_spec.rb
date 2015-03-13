@@ -47,10 +47,10 @@ describe Spree::ReturnAuthorization do
       end
 
       it 'should be the full amount of the returned inventory units, minus their portion of the line-item discount' do
-        # returning 1 x $10 item, but it was $10 off, so total of $0
-        # returning 2 x $30 item, but each was $20,   so total of $40
-        # so total being returned is $40
-        @return_authorization.compute_returned_amount.should eq BigDecimal.new('40')
+        # returning 1 x $10 item, but it was $2 off, so total of $8
+        # returning 2 x $30 item, but each was $28,   so total of $56
+        # so total being returned is $64
+        @return_authorization.compute_returned_amount.should eq BigDecimal.new('64')
       end
     end
   end

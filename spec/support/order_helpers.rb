@@ -27,7 +27,7 @@ module OrderHelpers
   def create_order_with_line_item_level_promo
     create_order
 
-    promo = FactoryGirl.create(:promotion, :with_line_item_adjustment, code: "test123")
+    promo = FactoryGirl.create(:promotion, :with_line_item_adjustment, code: "test123", adjustment_rate: 2)
     @order.coupon_code = promo.code
     promo_handler = Spree::PromotionHandler::Coupon.new(@order)
     promo_handler.apply
