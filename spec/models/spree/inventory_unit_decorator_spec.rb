@@ -43,8 +43,8 @@ describe Spree::InventoryUnit do
       end
 
       it 'should be the full price, minus its portion of the line-item discount' do
-        # Each $10 item was $2 off, so 8
-        @inventory_unit.price_after_discounts.should eq 8
+        # Each 2 x $10 - 2 = 18... 18/2 = 9
+        @inventory_unit.price_after_discounts.should eq 9
       end
     end
   end
