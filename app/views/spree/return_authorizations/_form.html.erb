@@ -41,8 +41,9 @@
   </table>
 
   <%= f.field_container :reason do %>
-    <%= f.label :reason, Spree.t(:reason) %>
-    <%= f.text_area :reason, {:style => 'height:100px;', :class => 'fullwidth'} %>
+    <%= f.label :reason, Spree.t(:reason) %> <span class="required">*</span> <br>
+    <%= f.select :reason, SpreeReturnRequests::Config[:return_request_reasons].split("\n") + ["Other"], prompt: Spree.t(:choose_a_reason) %> <br>
+    <%= f.text_area :reason_other %>
     <%= f.error_message_on :reason %>
   <% end %>
 </div>
@@ -52,6 +53,10 @@
   <% @return_authorization.order.line_items.group_by(&:variant).each do |variant, items| %>
     line_item_prices[<%= variant.id.to_s %>] = <%= items.first.inventory_units.first.price_after_discounts %>;
   <% end %>
+
+  function toggleOtherTextarea() {
+    $("#return_authorization_reason_other").toggle( $("#return_authorization_reason").val() == "Other" );
+  }
 
   $(document).ready(function(){
     // TODO: prevent customer from entering more than what's possible into the Qty field
@@ -67,5 +72,8 @@
         $("span#rma_value").html('$' + rma_amount.toFixed(2));
       }
     })
+
+    toggleOtherTextarea();
+    $("#return_authorization_reason").on('change', toggleOtherTextarea);
   });
 </script>

@@ -166,6 +166,32 @@ describe Spree::ReturnAuthorizationsController do
 
         @return_authorization.amount.should eq @return_authorization.compute_returned_amount
       end
+
+      context 'when the reason was "Other"' do
+        it 'should allow an explanation' do
+          reason = 'Other'
+          reason_other = 'Caused a rift in the Space/Time continuum.'
+          @params[:return_authorization][:reason] = reason
+          @params[:return_authorization][:reason_other] = reason_other
+          post :create, @params
+          @return_authorization = Spree::ReturnAuthorization.last
+
+          @return_authorization.reason.should eq "#{reason}: #{reason_other}"
+        end
+      end
+
+      context 'when the reason was not "Other"' do
+        it 'should ignore any submitted explanation' do
+          reason = 'NotOther'
+          reason_other = 'Caused a rift in the Space/Time continuum.'
+          @params[:return_authorization][:reason] = reason
+          @params[:return_authorization][:reason_other] = reason_other
+          post :create, @params
+          @return_authorization = Spree::ReturnAuthorization.last
+
+          @return_authorization.reason.should eq reason
+        end
+      end
     end
   end
 end
