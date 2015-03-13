@@ -51,16 +51,19 @@ describe Spree::Admin::ReturnRequestsSettingsController do
       it 'should update config settings' do
         new_text = 'This here is the new intro text.'
         new_age = 42
+        reasons = ['They smelled bad.', 'They looked bad.', 'They felt bad.'].join("\n")
 
         put :update, {
           return_request_intro_text: new_text,
           return_request_max_order_age_in_days: new_age,
+          return_request_reasons: reasons,
           use_route: 'spree',
         }
 
         response.should render_template :edit
         SpreeReturnRequests::Config[:return_request_intro_text].should == new_text
         SpreeReturnRequests::Config[:return_request_max_order_age_in_days].should == new_age
+        SpreeReturnRequests::Config[:return_request_reasons].should eq reasons
       end
     end
   end
