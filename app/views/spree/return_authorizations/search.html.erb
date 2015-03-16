@@ -1,0 +1,37 @@
+<div class="new-return-request row">
+
+  <div class="eight columns return-request-intro-text">
+    <%= SpreeReturnRequests::Config[:return_request_intro_text].html_safe %>
+  </div>
+
+  <div class="four columns return-request-form-container">
+    <%= form_for(:order, :url => spree.orders_return_authorizations_search_path, class: "six columns") do |f| %>
+
+      <fieldset data-hook="new_return_request_form_fields" class="no-border-top">
+        <legend align="center"><%= Spree.t(:new_return_request) %></legend>
+
+        <div data-hook="return_request_fields" class="row">
+          <div class="alpha twelve columns">
+            <div class="field">
+              <%= f.label :order_number, Spree.t(:order_number) %>
+              <%= f.text_field :order_number %>
+            </div>
+            <div class="field">
+              <%= f.label :email_address, Spree.t(:email_address) %>
+              <%= f.text_field :email_address %>
+            </div>
+          </div>
+          <div class="form-buttons filter-actions actions" data-hook="buttons">
+            <%= f.button "Search" %>
+          </div>
+        </div>
+
+        <% if @errors.any? %>
+          <% @errors.each do |e| %>
+            <p class="error"><%= e %></p>
+          <% end %>
+        <% end %>
+      </fieldset>
+    <% end %>
+  </div>
+</div>

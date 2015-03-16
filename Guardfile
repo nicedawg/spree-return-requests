@@ -19,7 +19,7 @@ guard :bundler do
   watch(/^.+\.gemspec/)
 end
 
-guard :rspec, cmd: "bundle exec rspec --drb" do
+guard :rspec, cmd: "bundle exec rspec", cmd_additional_arg: '--drb', failed_mode: :focus do
   require "guard/rspec/dsl"
   dsl = Guard::RSpec::Dsl.new(self)
 

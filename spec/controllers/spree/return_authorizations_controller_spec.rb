@@ -12,10 +12,11 @@ describe Spree::ReturnAuthorizationsController do
 
   describe '#new' do
 
-    it 'should redirect if the current user does not have access to the order' do
-      get :new, order_id: @order.number, use_route: 'spree'
-
-      response.should redirect_to spree.login_path
+    context 'when the current user does not have access to the order' do
+      it 'should redirect to the search page with a message' do
+        get :new, order_id: @order.number, use_route: 'spree'
+        response.should redirect_to spree.orders_return_authorizations_search_path
+      end
     end
 
     it 'should render :new if the user does have access to the order' do
@@ -35,11 +36,11 @@ describe Spree::ReturnAuthorizationsController do
     it 'should not allow an anonymous user if they have an incorrect token' do
       get :new, order_id: @order.number, token: @order.token + 'zzz', use_route: 'spree'
 
-      response.should_not be_success
+      response.should redirect_to spree.orders_return_authorizations_search_path
     end
 
     context 'when order has no shipped units' do
-      it 'should redirect back with a flash message' do
+      it 'should redirect back to the search page with a flash message' do
         controller.stub spree_current_user: @user
 
         order = FactoryGirl.create(:order_ready_to_ship)
@@ -48,6 +49,7 @@ describe Spree::ReturnAuthorizationsController do
 
         get :new, order_id: order.number, use_route: 'spree'
 
+        response.should redirect_to spree.orders_return_authorizations_search_path
         flash[:error].should match(/shipped/)
       end
     end
@@ -85,7 +87,7 @@ describe Spree::ReturnAuthorizationsController do
       it 'should redirect' do
         post :create, @params
 
-        response.should redirect_to spree.login_path
+        response.should redirect_to spree.orders_return_authorizations_search_path
       end
     end
 
@@ -190,6 +192,56 @@ describe Spree::ReturnAuthorizationsController do
           @return_authorization = Spree::ReturnAuthorization.last
 
           @return_authorization.reason.should eq reason
+        end
+      end
+    end
+  end
+
+  describe '#search' do
+    context 'when GETting it' do
+      it 'should be successful' do
+        get :search, use_route: 'spree'
+        response.should be_success
+      end
+    end
+
+    context 'when POSTing to it' do
+
+      before do
+        create_order
+        @order.reload
+        @params = { order: { order_number: @order.number, email_address: @order.email }, use_route: 'spree' }
+      end
+
+      context 'when order number left blank' do
+        it 'displays an error' do
+          @params[:order][:order_number] = nil
+          post :search, @params
+          assigns(:errors).empty?.should_not be_true
+        end
+      end
+
+      context 'when email left blank' do
+        it 'displays an error' do
+          @params[:order][:order_number] = nil
+          post :search, @params
+          assigns(:errors).empty?.should_not be_true
+        end
+      end
+
+      context 'when order with order number and email cannot be found' do
+        it 'displays an error' do
+          @params[:order][:order_number] = @order.number + '1'
+          @params[:order][:email_address] = @order.email + 'z'
+          post :search, @params
+          assigns(:errors).empty?.should_not be_true
+        end
+      end
+      context 'when order with order number and email is found' do
+        it 'redirects to the #new path' do
+          post :search, @params
+          assigns(:errors).empty?.should be_true
+          response.should redirect_to spree.new_order_return_authorization_path(@order)
         end
       end
     end

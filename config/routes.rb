@@ -1,6 +1,8 @@
 Spree::Core::Engine.routes.draw do
   resources :return_requests
 
+  match 'orders/return_authorizations/search', to: 'return_authorizations#search', via: [:get, :post]
+
   resources :orders do
     resources :return_authorizations, only: [:new, :create], shallow: true
   end
