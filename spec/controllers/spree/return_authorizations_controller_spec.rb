@@ -217,7 +217,7 @@ describe Spree::ReturnAuthorizationsController do
         it 'displays an error' do
           @params[:order][:order_number] = nil
           post :search, @params
-          assigns(:errors).empty?.should_not be_true
+          assigns(:errors).empty?.should_not be true
         end
       end
 
@@ -225,7 +225,7 @@ describe Spree::ReturnAuthorizationsController do
         it 'displays an error' do
           @params[:order][:order_number] = nil
           post :search, @params
-          assigns(:errors).empty?.should_not be_true
+          assigns(:errors).empty?.should_not be true
         end
       end
 
@@ -234,13 +234,13 @@ describe Spree::ReturnAuthorizationsController do
           @params[:order][:order_number] = @order.number + '1'
           @params[:order][:email_address] = @order.email + 'z'
           post :search, @params
-          assigns(:errors).empty?.should_not be_true
+          assigns(:errors).empty?.should_not be true
         end
       end
       context 'when order with order number and email is found' do
         it 'redirects to the #new path' do
           post :search, @params
-          assigns(:errors).empty?.should be_true
+          assigns(:errors).empty?.should be true
           response.should redirect_to spree.new_order_return_authorization_path(@order)
         end
       end
