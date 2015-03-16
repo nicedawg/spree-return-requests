@@ -66,7 +66,7 @@ describe Spree::ReturnAuthorizationsController do
         get :new, order_id: @order.number, use_route: 'spree'
 
         response.should render_template :error
-        assigns(:error).should match(/return window/)
+        assigns(:error).should eq SpreeReturnRequests::Config[:return_request_past_return_window_text]
       end
     end
   end
@@ -102,7 +102,7 @@ describe Spree::ReturnAuthorizationsController do
         post :create, @params
 
         response.should render_template :success
-        assigns(:message).should match(/thank you/i)
+        assigns(:message).should eq SpreeReturnRequests::Config[:return_request_success_text]
       end
     end
 
@@ -111,7 +111,7 @@ describe Spree::ReturnAuthorizationsController do
         post :create, @params.merge(token: @order.token)
 
         response.should render_template :success
-        assigns(:message).should match(/thank you/i)
+        assigns(:message).should eq SpreeReturnRequests::Config[:return_request_success_text]
       end
     end
 
@@ -165,7 +165,7 @@ describe Spree::ReturnAuthorizationsController do
       it 'should render the success page with a thank you message' do
         post :create, @params
         response.should render_template :success
-        assigns(:message).should match(/thank you/i)
+        assigns(:message).should eq SpreeReturnRequests::Config[:return_request_success_text]
       end
 
       context 'when the reason was "Other"' do

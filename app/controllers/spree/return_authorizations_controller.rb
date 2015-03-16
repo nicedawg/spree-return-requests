@@ -18,7 +18,7 @@ module Spree
         @return_authorization.amount = @return_authorization.compute_returned_amount
         @return_authorization.save!
 
-        @message = 'Thank you for submitting your return request! Your request will be reviewed and processed promptly. You will receive an email within the next 24 hours.'
+        @message = SpreeReturnRequests::Config[:return_request_success_text]
         render :success
         return
       else
@@ -69,8 +69,7 @@ module Spree
 
       def ensure_order_is_within_return_window
         if @order.completed_at < SpreeReturnRequests::Config[:return_request_max_order_age_in_days].days.ago
-          # TODO: make this error administrable
-          @error = "Looks like you are outside our return window. Returns must be made within 45 days of the day you placed your order. If you feel you have received this message in error, please contact our Customer Service department at 201.902.0056."
+          @error = SpreeReturnRequests::Config[:return_request_past_return_window_text]
           render :error
           return
         end

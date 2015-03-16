@@ -8,20 +8,34 @@
   <div id="preferences" data-hook>
     <fieldset class="general no-border-top">
 
+      <div class="field">
+        <%= label_tag(:return_request_intro_text, Spree.t(:return_requests_intro_text)) + tag(:br) %>
+        <p class="hint">Shown on page where customer can enter Order Number and email address to begin return request</p>
+        <%= preference_field_tag(:return_request_intro_text, SpreeReturnRequests::Config[:return_request_intro_text], type: :text) %>
+      </div>
+
        <div class="field">
         <%= label_tag(:return_request_max_order_age_in_days, Spree.t(:return_requests_max_order_age_in_days)) + tag(:br) %>
+        <p class="hint">Number of days since order placed, after which return requests are rejected</p>
         <%= preference_field_tag(:return_request_max_order_age_in_days, SpreeReturnRequests::Config[:return_request_max_order_age_in_days], :type => :integer) %>
       </div>
 
       <div class="field">
-        <%= label_tag(:return_request_reasons, Spree.t(:return_requests_reasons)) + tag(:br) %>
-        <p class="hint">Enter the reasons one per line.</p>
-        <%= preference_field_tag(:return_request_reasons, SpreeReturnRequests::Config[:return_request_reasons], type: :text) %>
+        <%= label_tag(:return_request_past_return_window_text, Spree.t(:return_requests_past_return_window_text)) + tag(:br) %>
+        <p class="hint">Shown when customer tries to request return for order which is too old</p>
+        <%= preference_field_tag(:return_request_past_return_window_text, SpreeReturnRequests::Config[:return_request_past_return_window_text], type: :text) %>
       </div>
 
       <div class="field">
-        <%= label_tag(:return_request_intro_text, Spree.t(:return_requests_intro_text)) + tag(:br) %>
-        <%= preference_field_tag(:return_request_intro_text, SpreeReturnRequests::Config[:return_request_intro_text], type: :text) %>
+        <%= label_tag(:return_request_success_text, Spree.t(:return_requests_success_text)) + tag(:br) %>
+        <p class="hint">Shown when customer's return request has been successfully placed.</p>
+        <%= preference_field_tag(:return_request_success_text, SpreeReturnRequests::Config[:return_request_success_text], type: :text) %>
+      </div>
+
+      <div class="field">
+        <%= label_tag(:return_request_reasons, Spree.t(:return_requests_reasons)) + tag(:br) %>
+        <p class="hint">These are the possible reasons a customer may choose for requesting their return. Enter the reasons one per line.</p>
+        <%= preference_field_tag(:return_request_reasons, SpreeReturnRequests::Config[:return_request_reasons], type: :text) %>
       </div>
 
       <div class="form-buttons filter-actions actions" data-hook="buttons">
