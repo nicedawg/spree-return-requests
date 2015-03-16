@@ -18,7 +18,8 @@ module Spree
         @return_authorization.amount = @return_authorization.compute_returned_amount
         @return_authorization.save!
 
-        redirect_to spree.new_return_request_path, flash: { success: Spree.t(:return_requests_return_authorization_succesfully_created) }
+        @message = 'Thank you for submitting your return request! Your request will be reviewed and processed promptly. You will receive an email within the next 24 hours.'
+        render :success
         return
       else
         render :new
@@ -53,20 +54,24 @@ module Spree
           @order = Spree::Order.find_by_number(params[:order_id])
           authorize! :read, @order, session[:access_token]
         rescue
+          flash[:error] = "You do not have access to this order."
           redirect_to(orders_return_authorizations_search_path) && return
         end
       end
 
       def ensure_order_has_shipped_units
         unless @order.shipped?
-          redirect_to orders_return_authorizations_search_path, flash: { error: Spree.t(:return_requests_order_must_be_shipped) }
+          @error = Spree.t(:return_requests_order_must_be_shipped)
+          render :error
           return
         end
       end
 
       def ensure_order_is_within_return_window
         if @order.completed_at < SpreeReturnRequests::Config[:return_request_max_order_age_in_days].days.ago
-          redirect_to orders_return_authorizations_search_path, flash: { error: Spree.t(:return_requests_order_not_within_return_window) }
+          # TODO: make this error administrable
+          @error = "Looks like you are outside our return window. Returns must be made within 45 days of the day you placed your order. If you feel you have received this message in error, please contact our Customer Service department at 201.902.0056."
+          render :error
           return
         end
       end

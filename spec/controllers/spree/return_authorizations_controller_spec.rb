@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe Spree::ReturnAuthorizationsController do
 
+  render_views
+
   before do
     @user = FactoryGirl.create(:user)
     @order = FactoryGirl.create(:shipped_order)
@@ -40,7 +42,7 @@ describe Spree::ReturnAuthorizationsController do
     end
 
     context 'when order has no shipped units' do
-      it 'should redirect back to the search page with a flash message' do
+      it 'should render the error page with a helpful message' do
         controller.stub spree_current_user: @user
 
         order = FactoryGirl.create(:order_ready_to_ship)
@@ -49,13 +51,13 @@ describe Spree::ReturnAuthorizationsController do
 
         get :new, order_id: order.number, use_route: 'spree'
 
-        response.should redirect_to spree.orders_return_authorizations_search_path
-        flash[:error].should match(/shipped/)
+        response.should render_template :error
+        assigns(:error).should match(/shipped/)
       end
     end
 
     context 'when order is past return window' do
-      it 'should redirect back with a flash message' do
+      it 'should render the error page with a helpful message' do
         controller.stub spree_current_user: @user
         SpreeReturnRequests::Config[:return_request_max_order_age_in_days] = 10
         @order.completed_at = 11.days.ago
@@ -63,7 +65,8 @@ describe Spree::ReturnAuthorizationsController do
 
         get :new, order_id: @order.number, use_route: 'spree'
 
-        flash[:error].should match(/return window/i)
+        response.should render_template :error
+        assigns(:error).should match(/return window/)
       end
     end
   end
@@ -88,6 +91,7 @@ describe Spree::ReturnAuthorizationsController do
         post :create, @params
 
         response.should redirect_to spree.orders_return_authorizations_search_path
+        flash[:error].should match(/access/)
       end
     end
 
@@ -97,8 +101,8 @@ describe Spree::ReturnAuthorizationsController do
 
         post :create, @params
 
-        response.should redirect_to spree.new_return_request_path
-        flash[:success].should match(/created/)
+        response.should render_template :success
+        assigns(:message).should match(/thank you/i)
       end
     end
 
@@ -106,15 +110,16 @@ describe Spree::ReturnAuthorizationsController do
       it 'should redirect to search and flash success' do
         post :create, @params.merge(token: @order.token)
 
-        response.should redirect_to spree.new_return_request_path
-        flash[:success].should match(/created/i)
+        response.should render_template :success
+        assigns(:message).should match(/thank you/i)
       end
     end
 
     it 'should not allow an anonymous user if they have an incorrect token' do
       post :create, @params.merge(token: @order.token + 'zzz')
 
-      response.should_not be_success
+      response.should redirect_to spree.orders_return_authorizations_search_path
+      flash[:error].should match(/access/)
     end
 
     context 'when order has no shipped units' do
@@ -127,20 +132,8 @@ describe Spree::ReturnAuthorizationsController do
 
         post :create, @params.merge(order_id: order.number)
 
-        flash[:error].should match(/shipped/)
-      end
-    end
-
-    context 'when order is past return window' do
-      it 'should redirect back with a flash message' do
-        controller.stub spree_current_user: @user
-        SpreeReturnRequests::Config[:return_request_max_order_age_in_days] = 10
-        @order.completed_at = 11.days.ago
-        @order.save!
-
-        post :create, @params
-
-        flash[:error].should match(/return window/i)
+        response.should render_template :error
+        assigns(:error).should match(/shipped/)
       end
     end
 
@@ -167,6 +160,12 @@ describe Spree::ReturnAuthorizationsController do
         @return_authorization = Spree::ReturnAuthorization.last
 
         @return_authorization.amount.should eq @return_authorization.compute_returned_amount
+      end
+
+      it 'should render the success page with a thank you message' do
+        post :create, @params
+        response.should render_template :success
+        assigns(:message).should match(/thank you/i)
       end
 
       context 'when the reason was "Other"' do
