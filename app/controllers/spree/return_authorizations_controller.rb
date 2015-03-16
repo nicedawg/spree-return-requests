@@ -6,17 +6,19 @@ module Spree
     before_filter :ensure_order_is_within_return_window, only: [:new, :create]
 
     def new
-      @return_authorization = Spree::ReturnAuthorization.new(order: @order, being_submitted_by_client: true)
+      @return_authorization = Spree::ReturnAuthorization.new(order: @order)
+      @return_authorization.being_submitted_by_client = true
     end
 
     def create
-      @return_authorization = Spree::ReturnAuthorization.new(permitted_params, being_submitted_by_client: true)
+      @return_authorization = Spree::ReturnAuthorization.new(permitted_params)
+      @return_authorization.being_submitted_by_client = true
       @return_authorization.order = @order
 
       if @return_authorization.save
         (params[:return_quantity] || []).each { |variant_id, qty| @return_authorization.add_variant(variant_id.to_i, qty.to_i) }
         @return_authorization.amount = @return_authorization.compute_returned_amount
-        @return_authorization.save!
+        @return_authorization.save
 
         @message = SpreeReturnRequests::Config[:return_request_success_text]
         render :success

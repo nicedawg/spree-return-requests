@@ -122,6 +122,17 @@ describe Spree::ReturnAuthorizationsController do
       flash[:error].should match(/access/)
     end
 
+    context 'when the user does not select a reason' do
+      it 'should render the form again with errors' do
+        @params[:return_authorization][:reason] = nil
+        @params[:token] = @order.token
+
+        post :create, @params
+
+        expect(response).to render_template :new
+      end
+    end
+
     context 'when order has no shipped units' do
       it 'should redirect back with a flash message' do
         controller.stub spree_current_user: @user
