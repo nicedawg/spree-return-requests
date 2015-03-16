@@ -37,7 +37,7 @@ module Spree
           order = Spree::Order.where(number: params[:order][:order_number], email: params[:order][:email_address]).first
 
           if order
-            redirect_to(new_order_return_authorization_path(order)) && return
+            redirect_to(new_order_return_authorization_path(order, params: { token: order.token })) && return
           else
             @errors << "Order not found."
           end

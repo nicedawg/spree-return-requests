@@ -237,10 +237,10 @@ describe Spree::ReturnAuthorizationsController do
         end
       end
       context 'when order with order number and email is found' do
-        it 'redirects to the #new path' do
+        it 'redirects to the #new path with the token in the params' do
           post :search, @params
           assigns(:errors).empty?.should be true
-          response.should redirect_to spree.new_order_return_authorization_path(@order)
+          response.should redirect_to spree.new_order_return_authorization_path(@order, params: { token: @order.token})
         end
       end
     end
