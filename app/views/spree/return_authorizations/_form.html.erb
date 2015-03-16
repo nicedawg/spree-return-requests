@@ -15,8 +15,8 @@
             <div class="variant-name"><%= variant.name %></div>
             <div class="variant-options"><%= variant.options_text %></div>
           </td>
-          <td class="align-center"><%= units.select(&:shipped?).size %></td>
-          <td class="align-center"><%= units.select(&:returned?).size %></td>
+          <td class="align-center units-shipped"><%= units.select(&:shipped?).size %></td>
+          <td class="align-center units-returned"><%= units.select(&:returned?).size %></td>
           <td class="return_quantity align-center">
             <% if @return_authorization.received? %>
               <%= @return_authorization.inventory_units.group_by(&:variant)[variant].try(:size) || 0 %>
@@ -59,11 +59,24 @@
   }
 
   $(document).ready(function(){
-    // TODO: prevent customer from entering more than what's possible into the Qty field
     var rma_amount = 0;
     $("td.return_quantity input").on('change', function() {
       var rma_amount = 0;
       $.each($("td.return_quantity input"), function(i, input) {
+
+        // if input isn't an integer, then make it 0
+        if ($(input).val() != parseInt($(input).val(), 10)) {
+          $(input).val(0);
+        }
+
+        // don't allow user to specify too high of a return
+        var units_shipped = $(input).parents("tr").find(".units-shipped").html();
+        var units_returned = $(input).parents("tr").find(".units-returned").html();
+        var units_allowed = units_shipped - units_returned;
+        if ($(input).val() > units_allowed) {
+          $(input).val(units_allowed);
+        }
+
         var variant_id = $(input).prop('id').replace("return_quantity_", "");
          rma_amount += line_item_prices[variant_id] * $(input).val()
       });
