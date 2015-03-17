@@ -36,7 +36,7 @@ module Spree
         @errors << "Email Address is required." unless params[:order][:email_address].present?
 
         if params[:order][:order_number].present? && params[:order][:email_address].present?
-          order = Spree::Order.where(number: params[:order][:order_number], email: params[:order][:email_address]).first
+          order = Spree::Order.where(number: params[:order][:order_number].strip, email: params[:order][:email_address].strip).first
 
           if order
             redirect_to(new_order_return_authorization_path(order, params: { token: order.token })) && return
