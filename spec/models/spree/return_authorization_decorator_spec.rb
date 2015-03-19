@@ -53,5 +53,34 @@ describe Spree::ReturnAuthorization do
         @return_authorization.compute_returned_amount.should eq BigDecimal.new('67.66')
       end
     end
+
+    context 'when first created' do
+
+      before do
+        create_order
+        complete_order
+        ship_order
+      end
+
+      context 'when the return authorization is authorized' do
+        it 'should send the mailer' do
+          allow(Spree::ReturnAuthorizationMailer).to receive(:authorized).and_call_original
+
+          return_order
+
+          expect(Spree::ReturnAuthorizationMailer).to have_received(:authorized)
+        end
+      end
+
+      context 'when the return authorization is NOT authorized' do
+        it 'should not send the mailer' do
+          allow(Spree::ReturnAuthorizationMailer).to receive(:authorized).and_call_original
+
+          return_order :received
+
+          expect(Spree::ReturnAuthorizationMailer).to_not have_received(:authorized)
+        end
+      end
+    end
   end
 end

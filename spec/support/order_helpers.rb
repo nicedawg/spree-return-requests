@@ -52,8 +52,8 @@ module OrderHelpers
     @order.reload
   end
 
-  def return_order
-    @return_authorization = FactoryGirl.create(:return_authorization, order: @order)
+  def return_order(state = 'authorized')
+    @return_authorization = FactoryGirl.create(:return_authorization, order: @order, state: state)
     @return_authorization.add_variant(@order.line_items.first.variant_id, 1)
     @return_authorization.add_variant(@order.line_items.last.variant_id, 2)
   end
