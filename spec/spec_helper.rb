@@ -72,15 +72,8 @@ Spork.prefork do
 
     # Ensure Suite is set to use transactions for speed.
     config.before :suite do
-      DatabaseCleaner.strategy = :transaction
-      DatabaseCleaner.clean_with :truncation
-    end
-
-    # Before each spec check if it is a Javascript test and switch between using database transactions or not where necessary.
-    config.before :each do
-      #DatabaseCleaner.strategy = RSpec.current_example.metadata[:js] ? :truncation : :transaction
       DatabaseCleaner.strategy = :truncation
-      DatabaseCleaner.start
+      DatabaseCleaner.clean_with :truncation
     end
 
     # After each spec clean the database.
