@@ -6,7 +6,16 @@ module Spree
       end
 
       def update
-         [:return_request_intro_text, :return_request_max_order_age_in_days, :return_request_past_return_window_text, :return_request_success_text].each do |setting|
+        simple_settings = [
+          :return_request_authorized_body,
+          :return_request_authorized_subject,
+          :return_request_intro_text,
+          :return_request_max_order_age_in_days,
+          :return_request_past_return_window_text,
+          :return_request_success_text
+        ]
+
+        simple_settings.each do |setting|
            SpreeReturnRequests::Config[setting] = params[setting]
          end
 

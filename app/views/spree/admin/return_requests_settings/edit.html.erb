@@ -6,18 +6,29 @@
 
 <%= form_tag admin_return_requests_settings_path, :method => :put do %>
   <div id="preferences" data-hook>
-    <fieldset class="general no-border-top">
+
+
+    <fieldset>
+      <legend align="center">Configuration</legend>
+       <div class="field">
+        <%= label_tag(:return_request_max_order_age_in_days, Spree.t(:return_requests_max_order_age_in_days)) + tag(:br) %>
+        <p class="hint">Number of days since order placed, after which return requests are rejected</p>
+        <%= preference_field_tag(:return_request_max_order_age_in_days, SpreeReturnRequests::Config[:return_request_max_order_age_in_days], :type => :integer) %>
+      </div>
+      <div class="field">
+        <%= label_tag(:return_request_reasons, Spree.t(:return_requests_reasons)) + tag(:br) %>
+        <p class="hint">These are the possible reasons a customer may choose for requesting their return. Enter the reasons one per line.</p>
+        <%= preference_field_tag(:return_request_reasons, SpreeReturnRequests::Config[:return_request_reasons], type: :text) %>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Webpage Copy</legend>
 
       <div class="field">
         <%= label_tag(:return_request_intro_text, Spree.t(:return_requests_intro_text)) + tag(:br) %>
         <p class="hint">Shown on page where customer can enter Order Number and email address to begin return request</p>
         <%= preference_field_tag(:return_request_intro_text, SpreeReturnRequests::Config[:return_request_intro_text], type: :text) %>
-      </div>
-
-       <div class="field">
-        <%= label_tag(:return_request_max_order_age_in_days, Spree.t(:return_requests_max_order_age_in_days)) + tag(:br) %>
-        <p class="hint">Number of days since order placed, after which return requests are rejected</p>
-        <%= preference_field_tag(:return_request_max_order_age_in_days, SpreeReturnRequests::Config[:return_request_max_order_age_in_days], :type => :integer) %>
       </div>
 
       <div class="field">
@@ -31,12 +42,29 @@
         <p class="hint">Shown when customer's return request has been successfully placed.</p>
         <%= preference_field_tag(:return_request_success_text, SpreeReturnRequests::Config[:return_request_success_text], type: :text) %>
       </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Email settings</legend>
 
       <div class="field">
-        <%= label_tag(:return_request_reasons, Spree.t(:return_requests_reasons)) + tag(:br) %>
-        <p class="hint">These are the possible reasons a customer may choose for requesting their return. Enter the reasons one per line.</p>
-        <%= preference_field_tag(:return_request_reasons, SpreeReturnRequests::Config[:return_request_reasons], type: :text) %>
+        <%= label_tag(:return_request_authorized_subject, Spree.t(:return_requests_authorized_subject)) + tag(:br) %>
+        <p class="hint">The subject of the email sent to the customer when their RMA has been authorized.</p>
+        <%= preference_field_tag(:return_request_authorized_subject, SpreeReturnRequests::Config[:return_request_authorized_subject], type: :string) %>
       </div>
+
+      <div class="field">
+        <%= label_tag(:return_request_authorized_body, Spree.t(:return_requests_authorized_body)) + tag(:br) %>
+        <p class="hint">The body of the email sent to the customer when their RMA has been authorized. You may use the following placeholders to be replaced when the email is sent:</p>
+        <dl>
+          <dt>%%ORDER_NUMBER%%</dt>
+          <dd>The order number that the RMA is linked to.</dd>
+          <dt>%%RETURN_AUTHORIZATION_NUMBER%%</dt>
+          <dd>The number of the RMA being authorized.</dd>
+        </dl>
+        <%= preference_field_tag(:return_request_authorized_body, SpreeReturnRequests::Config[:return_request_authorized_body], type: :text) %>
+      </div>
+    </fieldset>
 
       <div class="form-buttons filter-actions actions" data-hook="buttons">
         <%= button Spree.t('actions.update'), 'icon-refresh' %>
