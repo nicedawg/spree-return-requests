@@ -9,6 +9,7 @@ module Spree
         simple_settings = [
           :return_request_authorized_body,
           :return_request_authorized_subject,
+          :return_request_emails_from,
           :return_request_intro_text,
           :return_request_max_order_age_in_days,
           :return_request_past_return_window_text,

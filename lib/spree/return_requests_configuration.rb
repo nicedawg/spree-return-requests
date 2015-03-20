@@ -13,6 +13,7 @@ class Spree::ReturnRequestsConfiguration < Spree::Preferences::Configuration
     123 Easy Street
     Nowheresville, AZ 12345
   EOT
+  preference :return_request_emails_from, :email, default: 'spree@example.com'
   preference :return_request_intro_text, :text, default: 'This text is customizable via the configuration page.'
   preference :return_request_max_order_age_in_days, :integer, default: 90
   preference :return_request_past_return_window_text, :text, default: 'This order is beyond the allowed return window.'
