@@ -4,11 +4,6 @@
 en:
   spree:
     return_request_authorization: Return Authorization Request
-    new_return_request: New Return Request
-    edit_return_request: Edit Return Request
-    update_return_request: Update Return Request
-    approve_return_request: Approve Return Request
-    deny_return_request: Deny Return Request
     order_number: Order Number
     email_address: Email Address
     quantity_returned: Qty Returned
