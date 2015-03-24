@@ -57,6 +57,10 @@ module Spree
 
       def load_return_authorization
         @return_authorization = Spree::ReturnAuthorization.find_by_number params[:id]
+        if @return_authorization.nil?
+          flash[:error] = "You do not have access to this return."
+          redirect_to(orders_return_authorizations_search_path) && return
+        end
       end
 
       def load_order
