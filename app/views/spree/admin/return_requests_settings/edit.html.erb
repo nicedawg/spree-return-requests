@@ -73,6 +73,8 @@
           <dd>The order number that the RMA is linked to.</dd>
           <dt>%%RETURN_AUTHORIZATION_NUMBER%%</dt>
           <dd>The number of the RMA being authorized.</dd>
+          <dt>%%RETURN_AUTHORIZATION_LABELS_LINK%%</dt>
+          <dd>The link to the page where the customer can print out labels for this RMA.</dd>
         </dl>
         <%= preference_field_tag(:return_request_authorized_body, SpreeReturnRequests::Config[:return_request_authorized_body], type: :text) %>
       </div>
