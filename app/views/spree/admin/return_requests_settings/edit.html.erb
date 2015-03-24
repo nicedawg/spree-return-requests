@@ -20,6 +20,11 @@
         <p class="hint">These are the possible reasons a customer may choose for requesting their return. Enter the reasons one per line.</p>
         <%= preference_field_tag(:return_request_reasons, SpreeReturnRequests::Config[:return_request_reasons], type: :text) %>
       </div>
+      <div class="field">
+        <%= label_tag(:return_request_return_address, Spree.t(:return_requests_return_address)) + tag(:br) %>
+        <p class="hint">Enter the address to which returns should be addressed. This will be included in the "Address Label" which customers are given upon their RMA being granted.</p>
+        <%= preference_field_tag(:return_request_return_address, SpreeReturnRequests::Config[:return_request_return_address], type: :text) %>
+      </div>
     </fieldset>
 
     <fieldset>

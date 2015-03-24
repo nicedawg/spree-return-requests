@@ -13,6 +13,7 @@ module Spree
           :return_request_intro_text,
           :return_request_max_order_age_in_days,
           :return_request_past_return_window_text,
+          :return_request_return_address,
           :return_request_success_text
         ]
 

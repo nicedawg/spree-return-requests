@@ -1,0 +1,47 @@
+<table class="printable-return-form-table-meta-info">
+  <tbody>
+    <tr>
+      <td colspan="3" style="text-align: center; font-size: 2em;"><b>Return Form</b></td>
+    </tr>
+    <tr>
+      <td><b>Order Date:</b>
+        <td><%= @order.completed_at.strftime('%m/%d/%Y') %></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>Order Number:</b>
+      <td><%= @order.number %></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td><b>RMA Number:</b>
+      <td><%= @return_authorization.number %></td>
+      <td>&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="3">&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+<table class="printable-return-form-table">
+  <thead>
+    <tr>
+      <th class="printable-return-form-header">Item Number</tj>
+      <th class="printable-return-form-header">Item Description</th>
+      <th class="printable-return-form-header">Qty</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% 6.times do %>
+      <tr>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+
+

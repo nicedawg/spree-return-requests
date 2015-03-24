@@ -1,0 +1,17 @@
+<div class="printable-returns-address-label">
+  <p class="printable-returns-address-label-return-address">
+    <%= @order.ship_address.full_name %><br>
+    <%= @order.ship_address.address1 %><br>
+    <% if @order.ship_address.address2 %>
+      <%= @order.ship_address.address2 %><br>
+    <% end %>
+    <%= @order.ship_address.city %>, <%= @order.ship_address.state_text %> <%= @order.ship_address.zipcode %><br>
+    <b>RMA # </b><%= @return_authorization.number %>
+  </p>
+  <p class="printable-returns-address-label-postage-necessary">
+    <b>Postage Necessary</b>
+  </p>
+  <div class="printable-returns-address-label-address">
+    <%= simple_format(SpreeReturnRequests::Config[:return_request_return_address]) %>
+  </div>
+</div>

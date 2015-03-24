@@ -207,6 +207,36 @@ describe Spree::ReturnAuthorizationsController do
     end
   end
 
+  describe '#labels' do
+
+    before do
+      @params = { order_id: @order.number, token: @order.token, use_route: 'spree' }
+    end
+
+    context 'when the token is valid for the order' do
+      it 'should render the labels' do
+        get :labels, @params
+        response.should render_template :labels
+      end
+    end
+
+    context 'when the token is missing' do
+      it 'should redirect to the homepage' do
+        @params.delete :token
+        get :labels, @params
+        response.should redirect_to spree.orders_return_authorizations_search_path
+      end
+    end
+
+    context 'when the token is invalid' do
+      it 'should redirect to the homepage' do
+        @params[:token] += 'zzzz'
+        get :labels, @params
+        response.should redirect_to spree.orders_return_authorizations_search_path
+      end
+    end
+  end
+
   describe '#search' do
     context 'when GETting it' do
       it 'should be successful' do

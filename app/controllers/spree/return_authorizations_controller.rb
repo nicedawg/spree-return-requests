@@ -1,7 +1,9 @@
 module Spree
   class ReturnAuthorizationsController < Spree::StoreController
 
-    before_filter :check_authorization, only: [:new, :create]
+    before_filter :load_return_authorization, only: [:labels]
+    before_filter :load_order, only: [:labels]
+    before_filter :check_authorization, only: [:new, :create, :labels]
     before_filter :ensure_order_has_shipped_units, only: [:new, :create]
     before_filter :ensure_order_is_within_return_window, only: [:new, :create]
 
@@ -28,6 +30,9 @@ module Spree
       end
     end
 
+    def labels
+    end
+
     def search
       @errors = []
 
@@ -49,6 +54,14 @@ module Spree
     end
 
     private
+
+      def load_return_authorization
+        @return_authorization = Spree::ReturnAuthorization.find params[:id]
+      end
+
+      def load_order
+        params[:order_id] = @return_authorization.order.number
+      end
 
       def check_authorization
         session[:access_token] = params[:token] if params[:token]

@@ -28,5 +28,6 @@ class Spree::ReturnRequestsConfiguration < Spree::Preferences::Configuration
     'Wrong Item',
     'Other',
   ].join('\n')
+  preference :return_request_return_address, :text, default: 'Address where returns should be sent should be entered here.'
   preference :return_request_success_text, :text, default: 'Thank you for submitting your return request. We will get back to you soon.'
 end
