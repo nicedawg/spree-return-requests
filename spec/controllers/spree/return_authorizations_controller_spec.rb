@@ -211,7 +211,7 @@ describe Spree::ReturnAuthorizationsController do
 
     before do
       @return_authorization = FactoryGirl.create(:return_authorization, order: @order)
-      @params = { id: @return_authorization.id, token: @order.token, use_route: 'spree' }
+      @params = { id: @return_authorization.number, token: @order.token, use_route: 'spree' }
     end
 
     context 'when the token is valid for the order' do

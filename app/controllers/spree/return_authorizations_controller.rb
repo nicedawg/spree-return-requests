@@ -56,7 +56,7 @@ module Spree
     private
 
       def load_return_authorization
-        @return_authorization = Spree::ReturnAuthorization.find params[:id]
+        @return_authorization = Spree::ReturnAuthorization.find_by_number params[:id]
       end
 
       def load_order
