@@ -21,8 +21,16 @@
 
 <style type="text/css" media="all">
   .return-request-printout-divider {
-    border: 1px dashed black;
-    margin-bottom: 3em;
+    position: relative;
+    top: 50%;
+    border-top: 3px dashed black;
+    margin-top: -3px;
+  }
+
+  .scissors {
+    content: url(<%= asset_path('scissors.png') %>);
+    position: relative;
+    top: -27px;
   }
 
   .printable-return-form-table,

@@ -11,11 +11,16 @@
 
   <p>Please place the Address Label on outside of the box.</p>
 
-  <hr class="return-request-printout-divider" />
+
+  <div class="return-request-printout-divider">
+    <%= image_tag 'scissors.png', class: 'scissors' %>
+  </div>
 </div>
 
 <%= render partial: 'printable_return_form' %>
 
-<hr class="return-request-printout-divider" />
+<div class="return-request-printout-divider">
+  <%= image_tag 'scissors.png', class: 'scissors' %>
+</div>
 
 <%= render partial: 'printable_address_label' %>
