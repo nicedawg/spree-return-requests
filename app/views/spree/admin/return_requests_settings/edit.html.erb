@@ -15,6 +15,11 @@
         <p class="hint">Number of days since order placed, after which return requests are rejected</p>
         <%= preference_field_tag(:return_request_max_order_age_in_days, SpreeReturnRequests::Config[:return_request_max_order_age_in_days], :type => :integer) %>
       </div>
+       <div class="field">
+        <%= label_tag(:return_request_max_authorized_age_in_days, Spree.t(:return_requests_max_authorized_age_in_days)) + tag(:br) %>
+        <p class="hint">Number of days since Return Auth created, after which it's cancelled if still left in the authorized state.</p>
+        <%= preference_field_tag(:return_request_max_authorized_age_in_days, SpreeReturnRequests::Config[:return_request_max_authorized_age_in_days], :type => :integer) %>
+      </div>
       <div class="field">
         <%= label_tag(:return_request_reasons, Spree.t(:return_requests_reasons)) + tag(:br) %>
         <p class="hint">These are the possible reasons a customer may choose for requesting their return. Enter the reasons one per line.</p>

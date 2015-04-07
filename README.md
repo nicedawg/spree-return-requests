@@ -19,6 +19,14 @@ bundle
 bundle exec rails g spree_return_requests:install
 ```
 
+You may want to schedule the periodic expiration of old, stale authorized
+Return Authorizations which were never marked as received. 
+  * Make sure your settings provide a suitable window for the customer to send
+    in their return and have it marked as received.
+  * Make sure you communicate that window to your customers.
+  * And then schedule the periodic purging of old, stale authorized Return
+    Authorizations by calling ```Spree::ReturnAuthorization.cancel_authorized_and_expired``` using your favorite scheduled jobs mechanism.
+
 Testing
 -------
 

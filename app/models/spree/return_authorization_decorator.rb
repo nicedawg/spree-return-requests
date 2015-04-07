@@ -22,6 +22,14 @@ Spree::ReturnAuthorization.class_eval do
     order.try(:token)
   end
 
+  def self.cancel_authorized_and_expired
+    authorized_and_expired.each { |return_auth| return_auth.cancel! }
+  end
+
+  def self.authorized_and_expired
+    where(state: 'authorized').where('created_at <= ?', SpreeReturnRequests::Config[:return_request_max_authorized_age_in_days].days.ago)
+  end
+
   private
     def set_other_reason
       return unless new_record?

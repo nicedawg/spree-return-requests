@@ -84,7 +84,7 @@ describe Spree::ReturnAuthorizationsController do
         @order.update!
 
         # and then create a return authorization for that inventory unit
-        @return_authorization = FactoryGirl.build(:return_authorization, order: @order)
+        @return_authorization = FactoryGirl.create(:return_authorization, order: @order)
         @return_authorization.add_variant(@order.line_items.first.variant_id, 1)
 
         # now, let's ask for another return authorization

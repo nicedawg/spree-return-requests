@@ -83,4 +83,19 @@ describe Spree::ReturnAuthorization do
       end
     end
   end
+
+  describe '#authorized_past_expiration' do
+    before do
+      SpreeReturnRequests::Config[:return_request_max_authorized_age_in_days] = 30
+      @return_auth_1 = FactoryGirl.create(:return_authorization, state: 'authorized', created_at: 31.days.ago)
+      @return_auth_2 = FactoryGirl.create(:return_authorization, state: 'received', created_at: 28.days.ago)
+      @return_auth_3 = FactoryGirl.create(:return_authorization, state: 'authorized', created_at: 29.days.ago)
+    end
+    it 'should only include return authorizations that are both authorized and too old' do
+      authorized_and_expired = Spree::ReturnAuthorization.authorized_and_expired.map(&:id)
+      expect(authorized_and_expired).to include(@return_auth_1.id)
+      expect(authorized_and_expired).not_to include(@return_auth_2.id)
+      expect(authorized_and_expired).not_to include(@return_auth_3.id)
+    end
+  end
 end

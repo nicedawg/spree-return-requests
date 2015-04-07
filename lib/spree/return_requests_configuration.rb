@@ -16,6 +16,7 @@ class Spree::ReturnRequestsConfiguration < Spree::Preferences::Configuration
   preference :return_request_emails_from, :email, default: 'spree@example.com'
   preference :return_request_intro_text, :text, default: 'This text is customizable via the configuration page.'
   preference :return_request_max_order_age_in_days, :integer, default: 90
+  preference :return_request_max_authorized_age_in_days, :integer, default: 30
   preference :return_request_past_return_window_text, :text, default: 'This order is beyond the allowed return window.'
   preference :return_request_reasons, :text, default: [
     'Arrived Too Late',
