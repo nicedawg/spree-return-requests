@@ -4,6 +4,7 @@
       <tr data-hook="rma_header">
         <th><%= Spree.t(:product) %></th>
         <th><%= Spree.t(:quantity_shipped) %></th>
+        <th><%= Spree.t(:quantity_authorized_for_return) %></th>
         <th><%= Spree.t(:quantity_returned) %></th>
         <th><%= Spree.t(:return_quantity) %></th>
       </tr>
@@ -16,6 +17,7 @@
             <div class="variant-options"><%= variant.options_text %></div>
           </td>
           <td class="align-center units-shipped"><%= units.select(&:shipped?).size %></td>
+          <td class="align-center units-authorized-for-return"><%= units.select(&:authorized_for_return?).size %></td>
           <td class="align-center units-returned"><%= units.select(&:returned?).size %></td>
           <td class="return_quantity align-center">
             <% if @return_authorization.received? %>
@@ -32,7 +34,7 @@
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="3" style="text-align: right;">RMA Amount</td>
+        <td colspan="4" style="text-align: right;">RMA Amount</td>
         <td class="align-right">
           <span id="rma_value">$0.00</span>
         </td>
@@ -45,6 +47,17 @@
     <%= f.select :reason, SpreeReturnRequests::Config[:return_request_reasons].split("\n") + ["Other"], prompt: Spree.t(:choose_a_reason) %> <br>
     <%= f.text_area :reason_other %>
     <%= f.error_message_on :reason %>
+  <% end %>
+
+  <% if @return_authorization.other_authorized_requests.any? %>
+    <%= f.field_container :other_authorized_requests do %>
+      <p class="other-authorized-requests-intro-text">Here are links to other authorized Return Requests related to this order:</p>
+      <ul>
+        <% @return_authorization.other_authorized_requests.each do |return_auth| %>
+          <li><%= link_to return_auth.number, labels_return_authorization_path(return_auth.number, token: return_auth.order_token), class: 'return-label-link', target: :_blank %></li>
+        <% end %>
+      </ul>
+    <% end %>
   <% end %>
 </div>
 
@@ -72,7 +85,8 @@
         // don't allow user to specify too high of a return
         var units_shipped = $(input).parents("tr").find(".units-shipped").html();
         var units_returned = $(input).parents("tr").find(".units-returned").html();
-        var units_allowed = units_shipped - units_returned;
+        var units_authorized_for_return = $(input).parents("tr").find(".units-authorized-for-return").html();
+        var units_allowed = units_shipped - units_returned - units_authorized_for_return;
         if ($(input).val() > units_allowed) {
           $(input).val(units_allowed);
         }

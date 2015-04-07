@@ -4,6 +4,10 @@ Spree::InventoryUnit.class_eval do
      (unit_price + proportional_order_level_amount + unit_promo_amount).round(2)
   end
 
+  def authorized_for_return?
+    shipped? && return_authorization.present? && return_authorization.authorized?
+  end
+
   private
     def unit_price
       line_item.price

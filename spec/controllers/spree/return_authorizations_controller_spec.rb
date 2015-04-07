@@ -8,6 +8,7 @@ describe Spree::ReturnAuthorizationsController do
     @user = FactoryGirl.create(:user)
     @order = FactoryGirl.create(:shipped_order)
     @order.user = @user
+    @order.completed_at = 1.day.ago
     @order.save!
     @order.update!
   end
@@ -67,6 +68,36 @@ describe Spree::ReturnAuthorizationsController do
 
         response.should render_template :error
         assigns(:error).should eq SpreeReturnRequests::Config[:return_request_past_return_window_text]
+      end
+    end
+
+    context 'when order has another authorized return request' do
+      before do
+        # create/complete an order and ship one of its inventory units
+        create_order
+        @order.user = @user
+        complete_order
+        @order.completed_at = 1.day.ago
+        SpreeReturnRequests::Config[:return_request_max_order_age_in_days] = 100
+        @order.save!
+        ship_order
+        @order.update!
+
+        # and then create a return authorization for that inventory unit
+        @return_authorization = FactoryGirl.build(:return_authorization, order: @order)
+        @return_authorization.add_variant(@order.line_items.first.variant_id, 1)
+
+        # now, let's ask for another return authorization
+        controller.stub spree_current_user: @user
+        get :new, order_id: @order.number, use_route: 'spree'
+      end
+
+      it 'should show units which have been authorized for return' do
+        expect(response.body).to match('units-authorized-for-return')
+      end
+
+      it 'should link to the other authorized RMA label pages for convenience' do
+        expect(response.body).to match('return-label-link')
       end
     end
   end

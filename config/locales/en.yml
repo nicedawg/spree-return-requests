@@ -9,4 +9,5 @@ en:
     quantity_returned: Qty Returned
     quantity_shipped: Qty Shipped
     ready_to_submit: Ready to Submit?
+    return_quantity_must_be_greater_than_zero: Return quantity must be greater than zero
     return_requests_settings: Return Requests Settings

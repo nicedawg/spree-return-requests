@@ -16,18 +16,20 @@ module Spree
       @return_authorization = Spree::ReturnAuthorization.new(permitted_params)
       @return_authorization.being_submitted_by_client = true
       @return_authorization.order = @order
+      @return_authorization.total_returned_qty = total_returned_qty
 
       if @return_authorization.save
         (params[:return_quantity] || []).each { |variant_id, qty| @return_authorization.add_variant(variant_id.to_i, qty.to_i) }
         @return_authorization.amount = @return_authorization.compute_returned_amount
-        @return_authorization.save
 
-        @message = SpreeReturnRequests::Config[:return_request_success_text]
-        render :success
-        return
-      else
-        render :new
+        if @return_authorization.save
+          @message = SpreeReturnRequests::Config[:return_request_success_text]
+          render :success
+          return
+        end
       end
+
+      render :new
     end
 
     def labels
@@ -76,6 +78,12 @@ module Spree
           flash[:error] = "You do not have access to this order."
           redirect_to(orders_return_authorizations_search_path) && return
         end
+      end
+
+      def total_returned_qty
+        total_qty = 0
+        params[:return_quantity].each { |variant_id, qty| total_qty += qty.to_i }
+        total_qty
       end
 
       def ensure_order_has_shipped_units

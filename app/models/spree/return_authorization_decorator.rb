@@ -2,14 +2,24 @@ Spree::ReturnAuthorization.class_eval do
 
   attr_accessor :being_submitted_by_client
   attr_accessor :reason_other
+  attr_accessor :total_returned_qty
 
   validates :reason, presence: true, if: :being_submitted_by_client
+  validates :total_returned_qty, numericality: { only_integer: true, greater_than: 0 }, if: :being_submitted_by_client
   after_commit :send_authorized_mail, on: :create
 
   before_validation :set_other_reason
 
   def compute_returned_amount
     inventory_units.to_a.sum(&:price_after_discounts)
+  end
+
+  def other_authorized_requests
+    order.return_authorizations.where(state: 'authorized')
+  end
+
+  def order_token
+    order.try(:token)
   end
 
   private
