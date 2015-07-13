@@ -16,11 +16,25 @@ module Spree
       @return_authorization = Spree::ReturnAuthorization.new(permitted_params)
       @return_authorization.being_submitted_by_client = true
       @return_authorization.order = @order
+      @return_authorization.return_quantity = params[:return_quantity]
+      @return_authorization.return_reason = params[:return_reason]
+      @return_authorization.return_comments = params[:return_comments]
       @return_authorization.total_returned_qty = total_returned_qty
 
       if @return_authorization.save
         (params[:return_quantity] || []).each { |variant_id, qty| @return_authorization.add_variant(variant_id.to_i, qty.to_i) }
         @return_authorization.amount = @return_authorization.compute_returned_amount
+
+        # add reasons and comments for each "line item"
+        (params[:return_reason] || []).each do |variant_id, reason|
+          comments = params[:return_comments] ? params[:return_comments][variant_id] : nil
+          next unless comments.present? || reason.present?
+          variant = Spree::Variant.find variant_id
+          return_info = @return_authorization.get_return_info_for_variant(variant)
+          return_info.reason = reason
+          return_info.comments = comments
+          return_info.save!
+        end
 
         if @return_authorization.save
           @message = SpreeReturnRequests::Config[:return_request_success_text]
@@ -52,7 +66,6 @@ module Spree
           end
         end
       end
-
     end
 
     private
@@ -103,7 +116,7 @@ module Spree
       end
 
       def permitted_params
-        params.require(:return_authorization).permit(:order_id, :return_quantity, :reason, :reason_other)
+        params.permit(:return_authorization, :order_id, :reason, :reason_other)
       end
   end
 end

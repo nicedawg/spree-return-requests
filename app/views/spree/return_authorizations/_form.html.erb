@@ -7,10 +7,13 @@
         <th><%= Spree.t(:quantity_authorized_for_return) %></th>
         <th><%= Spree.t(:quantity_returned) %></th>
         <th><%= Spree.t(:return_quantity) %></th>
+        <th><%= Spree.t(:return_reason) %></th>
+        <th><%= Spree.t(:return_comments) %></th>
       </tr>
     </thead>
     <tbody>
       <% @return_authorization.order.shipments.shipped.collect{|s| s.inventory_units.to_a}.flatten.group_by(&:variant).each do | variant, units| %>
+        <% return_info = @return_authorization.get_return_info_for_variant(variant) %>
         <tr id="<%= dom_id(variant) %>" data-hook="rma_row" class="<%= cycle('odd', 'even')%>">
           <td>
             <div class="variant-name"><%= variant.name %></div>
@@ -29,12 +32,18 @@
                 @return_authorization.inventory_units.group_by(&:variant)[variant].try(:size) || 0, {:style => 'width:100px;', :min => 0} %>
             <% end %>
           </td>
+          <td class="return_reason">
+            <%= select_tag "return_reason[#{variant.id}]", options_for_select(SpreeReturnRequests::Config[:return_request_reasons].lines + ["Other"], params[:return_reason] ? params[:return_reason][variant.id.to_s] : nil), prompt: Spree.t(:choose_a_reason) %> <br>
+          </td>
+          <td class="return_comments">
+            <%= text_area_tag "return_comments[#{variant.id}]", params[:return_comments] ? params[:return_comments][variant.id.to_s] : '' %>
+          </td>
         </tr>
       <% end %>
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="4" style="text-align: right;">RMA Amount</td>
+        <td colspan="6" style="text-align: right;">RMA Amount</td>
         <td class="align-right">
           <span id="rma_value">$0.00</span>
         </td>
@@ -42,12 +51,6 @@
     </tfoot>
   </table>
 
-  <%= f.field_container :reason do %>
-    <%= f.label :reason, Spree.t(:reason) %> <span class="required">*</span> <br>
-    <%= f.select :reason, SpreeReturnRequests::Config[:return_request_reasons].split("\n") + ["Other"], prompt: Spree.t(:choose_a_reason) %> <br>
-    <%= f.text_area :reason_other %>
-    <%= f.error_message_on :reason %>
-  <% end %>
 
   <% if @return_authorization.other_authorized_requests.any? %>
     <%= f.field_container :other_authorized_requests do %>
@@ -66,10 +69,6 @@
   <% @return_authorization.order.line_items.group_by(&:variant).each do |variant, items| %>
     line_item_prices[<%= variant.id.to_s %>] = <%= items.first.inventory_units.first.price_after_discounts %>;
   <% end %>
-
-  function toggleOtherTextarea() {
-    $("#return_authorization_reason_other").toggle( $("#return_authorization_reason").val() == "Other" );
-  }
 
   $(document).ready(function(){
     var rma_amount = 0;
@@ -99,8 +98,5 @@
         $("span#rma_value").html('$' + rma_amount.toFixed(2));
       }
     })
-
-    toggleOtherTextarea();
-    $("#return_authorization_reason").on('change', toggleOtherTextarea);
   });
 </script>
