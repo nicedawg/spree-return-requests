@@ -3,10 +3,10 @@
     <thead>
       <tr data-hook="rma_header">
         <th><%= Spree.t(:product) %></th>
-        <th><%= Spree.t(:quantity_shipped) %></th>
-        <th><%= Spree.t(:quantity_authorized_for_return) %></th>
-        <th><%= Spree.t(:quantity_returned) %></th>
-        <th><%= Spree.t(:return_quantity) %></th>
+        <th class="units-shipped"><%= Spree.t(:quantity_shipped) %></th>
+        <th class="units-authorized-for-return"><%= Spree.t(:quantity_authorized_for_return) %></th>
+        <th class="units-returned"><%= Spree.t(:quantity_returned) %></th>
+        <th class="return_quantity"><%= Spree.t(:return_quantity) %></th>
         <th><%= Spree.t(:return_reason) %></th>
         <th><%= Spree.t(:return_comments) %></th>
       </tr>
@@ -33,7 +33,7 @@
             <% end %>
           </td>
           <td class="return_reason">
-            <%= select_tag "return_reason[#{variant.id}]", options_for_select(SpreeReturnRequests::Config[:return_request_reasons].lines + ["Other"], params[:return_reason] ? params[:return_reason][variant.id.to_s] : nil), prompt: Spree.t(:choose_a_reason) %> <br>
+            <%= select_tag "return_reason[#{variant.id}]", options_for_select(SpreeReturnRequests::Config[:return_request_reasons].lines + ["Other"], params[:return_reason] ? params[:return_reason][variant.id.to_s] : nil), include_blank: true %> <br>
           </td>
           <td class="return_comments">
             <%= text_area_tag "return_comments[#{variant.id}]", params[:return_comments] ? params[:return_comments][variant.id.to_s] : '' %>
