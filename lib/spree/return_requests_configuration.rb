@@ -1,4 +1,5 @@
 class Spree::ReturnRequestsConfiguration < Spree::Preferences::Configuration
+  preference :return_request_admin_email, :email, default: 'spree@example.com'
   preference :return_request_authorized_subject, :string, default: 'Your Return Request Has Been Authorized'
   preference :return_request_authorized_body, :text, default: <<-EOT
   Congratulations!
@@ -14,6 +15,7 @@ class Spree::ReturnRequestsConfiguration < Spree::Preferences::Configuration
     Nowheresville, AZ 12345
   EOT
   preference :return_request_emails_from, :email, default: 'spree@example.com'
+  preference :return_request_exchange_notification_subject, :string, default: 'RMA including Exchange requested'
   preference :return_request_intro_text, :text, default: 'This text is customizable via the configuration page.'
   preference :return_request_max_order_age_in_days, :integer, default: 90
   preference :return_request_max_authorized_age_in_days, :integer, default: 30

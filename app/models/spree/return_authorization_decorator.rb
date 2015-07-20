@@ -8,7 +8,7 @@ Spree::ReturnAuthorization.class_eval do
 
   validates :total_returned_qty, numericality: { only_integer: true, greater_than: 0 }, if: :being_submitted_by_client
   validate :line_items_are_valid, if: :being_submitted_by_client
-  after_commit :send_authorized_mail, on: :create
+  after_commit :send_authorized_mail, on: :create, if: :being_submitted_by_client
 
   before_destroy { |record| Spree::LineItem::ReturnInfo.destroy_all "return_authorization_id = #{record.id}" }
 
@@ -31,6 +31,10 @@ Spree::ReturnAuthorization.class_eval do
       return_info = Spree::LineItem::ReturnInfo.new(return_authorization: self, line_item: li)
     end
     return_info
+  end
+
+  def contains_an_exchange?
+    Spree::LineItem::ReturnInfo.for_rma(self).any? { |return_info| return_info.reason == 'Exchange' }
   end
 
   def self.cancel_authorized_and_expired

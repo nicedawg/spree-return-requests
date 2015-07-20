@@ -37,6 +37,8 @@ module Spree
         end
 
         if @return_authorization.save
+          Spree::ReturnAuthorizationMailer.contains_exchange(@return_authorization).deliver if @return_authorization.contains_an_exchange?
+
           @message = SpreeReturnRequests::Config[:return_request_success_text]
           render :success
           return

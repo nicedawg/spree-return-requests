@@ -64,6 +64,13 @@
       </div>
 
       <div class="field">
+        <%= label_tag(:return_request_admin_email, Spree.t(:return_requests_admin_email)) + tag(:br) %>
+        <p class="hint">The 'To' address used when sending emails to admins about return requests (like customer service)</p>
+        <%= preference_field_tag(:return_request_admin_email, SpreeReturnRequests::Config[:return_request_admin_email], type: :email) %>
+      </div>
+
+
+      <div class="field">
         <%= label_tag(:return_request_authorized_subject, Spree.t(:return_requests_authorized_subject)) + tag(:br) %>
         <p class="hint">The subject of the email sent to the customer when their RMA has been authorized.</p>
         <%= preference_field_tag(:return_request_authorized_subject, SpreeReturnRequests::Config[:return_request_authorized_subject], type: :string) %>
@@ -83,6 +90,13 @@
         </dl>
         <%= preference_field_tag(:return_request_authorized_body, SpreeReturnRequests::Config[:return_request_authorized_body], type: :text) %>
       </div>
+
+      <div class="field">
+        <%= label_tag(:return_request_exchange_notification_subject, Spree.t(:return_requests_exchange_notification_subject)) + tag(:br) %>
+        <p class="hint">The subject of the email sent to the admin when a return containing an exchange.</p>
+        <%= preference_field_tag(:return_request_exchange_notification_subject, SpreeReturnRequests::Config[:return_request_exchange_notification_subject], type: :string) %>
+      </div>
+
     </fieldset>
 
       <div class="form-buttons filter-actions actions" data-hook="buttons">

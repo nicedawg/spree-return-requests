@@ -13,4 +13,13 @@ class Spree::ReturnAuthorizationMailer < Spree::BaseMailer
       subject: SpreeReturnRequests::Config[:return_request_authorized_subject],
     )
   end
+
+  def contains_exchange(return_auth)
+    @return_auth = return_auth
+    mail(
+      from: SpreeReturnRequests::Config[:return_request_emails_from],
+      to: SpreeReturnRequests::Config[:return_request_admin_email],
+      subject: SpreeReturnRequests::Config[:return_request_exchange_notification_subject],
+    )
+  end
 end
